@@ -21,6 +21,16 @@ security:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
 
+            form_login:
+                login_path: /login
+                check_path: /login
+                default_target_path: /
+                username_parameter: email
+
+        #     logout:
+         #       path:   app_logout
+          #      target: /
+
             # activate different ways to authenticate
 
             # http_basic: true
