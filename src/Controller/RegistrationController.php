@@ -32,6 +32,9 @@ class RegistrationController extends AbstractController
                 )
             );
 
+            // PONEMOS EL TIMEPO DEL USUARIO A 0
+            $user->setTime(0);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
