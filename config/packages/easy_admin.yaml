@@ -4,3 +4,11 @@
 #        - App\Entity\Product
 #        - App\Entity\Category
 #        - App\Entity\User
+#
+
+easy_admin:
+  entities:
+    User:
+      class: App\Entity\User
+      list:
+        title: 'User'
