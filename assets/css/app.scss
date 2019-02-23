@@ -1,12 +1,33 @@
 @import '~bootstrap-sass/assets/stylesheets/bootstrap';
 
-$acceVerde: #84a640;
-$acceAzul: #396696;
+body {
+    width: 80%;
+    margin: 0 auto;
+}
 
-h1 {
-    color: $acceVerde;
+header {
+    background-color: red;
+}
 
-    s {
-        color: $acceAzul;
-    }
+header nav {
+    background-color: black;
+}
+
+main {
+    margin: 0% auto;
+    background-color: chartreuse;
+}
+
+footer {
+    background-color: blue;
+}
+
+.card {
+    background-color: #999;
+}
+
+#services{
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 5px;
 }
