@@ -33,9 +33,11 @@ class Category
      */
     private $services;
 
-    public function __construct()
+    public function __construct($data)
     {
         $this->services = new ArrayCollection();
+        $this->name = $data['name'];
+        $this->img = $data['img'];
     }
 
     public function getId(): ?int

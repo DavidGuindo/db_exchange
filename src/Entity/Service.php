@@ -26,6 +26,15 @@ class Service
      */
     private $category;
 
+    /**
+     * Contructor de la clase
+     */
+    public function __construct($data){
+        $this->name=$data['name'];
+        $this->category=$data['category'];
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
