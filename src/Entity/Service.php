@@ -27,10 +27,16 @@ class Service
     private $category;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $img;
+
+    /**
      * Contructor de la clase
      */
     public function __construct($data){
         $this->name=$data['name'];
+        $this->img=$data['img'];
         $this->category=$data['category'];
     }
 
@@ -60,6 +66,18 @@ class Service
     public function setCategory(?category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getImg(): ?string
+    {
+        return $this->img;
+    }
+
+    public function setImg(string $img): self
+    {
+        $this->img = $img;
 
         return $this;
     }
