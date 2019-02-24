@@ -2,15 +2,20 @@
 namespace App\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\Date;
-
 use App\Entity\Users;
 use App\Entity\Message;
 use App\Entity\Service;
 use App\Entity\Category;
 use App\Entity\City;
+
+// $token = $this->get('security.token_storage')->getToken();
+// 		$user = $token->getUser();                         			OBTENER USUARIO LOGEADO.
+
+
 
 /**
  * @Route("/")
@@ -25,8 +30,18 @@ class DefaultController extends Controller {
 		$repositoryService = $this->getDoctrine()->getRepository(Service::class);
 		// Descargamos todos los servicios
 		$all_services = $repositoryService->findAll();
+		
 		return $this->render('index.html.twig', ['all_services'=>$all_services]);		
 	}
+
+	/**
+     * @Route("/logout", name="app_logout")
+     */
+    public function salir(Request $request): Response
+    {
+        return $this->index($request);
+
+    }
 
 	/**
 	 * @Route("/AreaPrivada", name="AreaPrivada")
@@ -54,7 +69,10 @@ class DefaultController extends Controller {
 		// buscamos la categoria por la id que hemos recibido
 		$data['category']=$repositoryCategory->findOneById($_POST['category']);
 		$data['name']=$_POST['name'];
-		$data['img']=$_POST['img'];
+
+		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
+        $imagen = $_FILES['img']['name'];
+		$data['img']=$imagen;
 
 		// creamos objeto
 		$new_service = new Service($data);
@@ -74,7 +92,9 @@ class DefaultController extends Controller {
 		$entityManager = $this->getDoctrine()->getManager();
 
 		$data['name']=$_POST['name'];
-		$data['img']=$_POST['img'];
+		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
+        $imagen = $_FILES['img']['name'];
+		$data['img']=$imagen;
 		
 		//creamos objeto
 		$new_category = new Category($data);
