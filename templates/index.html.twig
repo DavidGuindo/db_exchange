@@ -6,7 +6,8 @@
 
         <img src="LOGo">
          <!--ENLACE AL AREA PRIVADA-->
-         <a href="./AreaPrivada"><img src="../assets/img/user.png" width="50px" height="50px" class="float-right"></a>
+         <a href="./AreaPrivada">
+         <img src="../assets/img/user.png" width="50px" height="50px" class="float-right"></a>
          
          <h1>TITULO WEB</h1>
 
@@ -85,15 +86,30 @@
         </select>
         <input type="submit" value="Filtrar">
 
-        {% for service in all_services %}
+        <table>
+
+        
+
+          {% set counter = 1 %}
+
+          {% for service in all_services %}
+
           <div id="services">
+
+            {%  if counter == 0 %}
+
+              <tr>
+
+            {% endif %} 
+
+            <td>
               <div class="card" style="width: 18rem;">
                   <img class="card-img-top" src="IMAGEN SERVICIO" alt="Card image cap">
                   <div class="card-body">
                       <h5 class="card-title">{{service.getName}}</h5>
                       <p class="card-text">Descripcion</p>
                       <p class="card-text">Tiempo</p>
-                      <!--ESTE FORMULARIO ENVIA UN MENSAGE DE SOLICITUD-->
+                      <!--ESTE FORMULARIO ENVIA UN MENSAJE DE SOLICITUD-->
                       <form action="" method="POST">
                         <button class="btn btn-primary" type="submit">Solicitar servicio</button>
                         <input type="hidden" value="service.getId}}">
@@ -101,8 +117,19 @@
                       </form>
                   </div>
               </div>
+              </td>
+
+              {%  if counter == 3 %}
+  
+              </tr>
+
+              {% set counter = 0 %}
+
+{% endif %}
           </div>
         {% endfor %}
+
+        </table>
 
       </section>
 
