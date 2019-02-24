@@ -5,6 +5,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\Date;
+use App\Entity\Category;
+use App\Entity\Message;
+use App\Entity\Service;
+use App\Entity\Users;
 
 
 /**
