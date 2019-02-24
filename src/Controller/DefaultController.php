@@ -5,11 +5,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\Date;
-use App\Entity\Message;
-use App\Entity\Category;
-use App\Entity\Service;
-use App\Entity\Users;
-
 use App\Entity\Users;
 use App\Entity\Messaje;
 use App\Entity\Service;
@@ -56,7 +51,10 @@ class DefaultController extends Controller {
 		// buscamos la categoria por la id que hemos recibido
 		$data['category']=$repositoryCategory->findOneById($_POST['category']);
 		$data['name']=$_POST['name'];
-		$data['img']=$_POST['img'];
+
+		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
+        $imagen = $_FILES['img']['name'];
+		$data['img']=$imagen;
 
 		// creamos objeto
 		$new_service = new Service($data);
@@ -76,7 +74,9 @@ class DefaultController extends Controller {
 		$entityManager = $this->getDoctrine()->getManager();
 
 		$data['name']=$_POST['name'];
-		$data['img']=$_POST['img'];
+		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
+        $imagen = $_FILES['img']['name'];
+		$data['img']=$imagen;
 		
 		//creamos objeto
 		$new_category = new Category($data);
