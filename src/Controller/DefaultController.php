@@ -26,12 +26,17 @@ class DefaultController extends Controller {
 	 * @Route("/", name="index")
 	 */
 	public function index(){
+		// Con esto descargamos el usuario logeado
+		$token = $this->get('security.token_storage')->getToken();
+ 		$user = $token->getUser();
+	
+	
 		//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
 		$repositoryService = $this->getDoctrine()->getRepository(Service::class);
 		// Descargamos todos los servicios
 		$all_services = $repositoryService->findAll();
 		
-		return $this->render('index.html.twig', ['all_services'=>$all_services]);		
+		return $this->render('index.html.twig', ['all_services'=>$all_services, 'userLogged'=>$user]);		
 	}
 
 	/**
