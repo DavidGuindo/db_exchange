@@ -22,7 +22,7 @@ class Service
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\category", inversedBy="services")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="services")
      */
     private $category;
 

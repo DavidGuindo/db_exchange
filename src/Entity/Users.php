@@ -62,15 +62,11 @@ class Users implements UserInterface
      */
     private $messages;
 
-    public function __construct()
-    {
-        $this->messages = new ArrayCollection();
-    }
-
     /**
      * Contrsctor del objeto
      */
     public function __contsruct($data){
+        $this->messages = new ArrayCollection();
         $this->email = $data['email'];
         $this->password = $data['password'];
         $this->name = $data['name'];
