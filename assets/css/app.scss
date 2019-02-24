@@ -9,13 +9,27 @@ header {
     background-color: red;
 }
 
-header nav {
+#nav {
+    height: 50px;
+    width: 100%;
     background-color: black;
+}
+
+#nav nav {
+    margin-top: 15px;
 }
 
 main {
     margin: 0% auto;
     background-color: chartreuse;
+}
+
+fieldset {
+    background-color: burlywood;
+    width: 85%;
+    margin: 0 auto;
+    margin-bottom: 20px;
+
 }
 
 footer {

@@ -47,4 +47,18 @@ class MessageRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * Funcion que devuelve todos los mensaje de un usuario
+     */
+    public function findByUserSend($value)
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.userSend = :val')
+            ->setParameter('val', $value)
+            ->orderBy('m.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

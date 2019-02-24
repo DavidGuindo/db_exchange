@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\Date;
 
 use App\Entity\Users;
-use App\Entity\Messaje;
+use App\Entity\Message;
 use App\Entity\Service;
 use App\Entity\Category;
 use App\Entity\City;
@@ -35,10 +35,12 @@ class DefaultController extends Controller {
 		//descargamos todos las categorias y usuarios que tenemos en base de datos para mostrar en la vista
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
+		$repositoryMessage = $this->getDoctrine()->getRepository(Message::class);
 		// Descargamos todos las categorias y usuarios
 		$all_category = $repositoryCategory->findAll();
 		$all_users = $repositoryUsers->findAll();
-		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users]);		
+		//$all_message = $repositoryMessage->findByUserSend($IDUSUARIO LOGEADO);
+		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users/*, 'all_message'=>$all_message*/]);		
 	}
 
 
@@ -123,6 +125,10 @@ class DefaultController extends Controller {
 		$entityManager->flush();
 
 		return $this->redirectToRoute("AreaPrivada");
-		
 	}
+
+	/**
+	 * @Route("/list", name="createCity")
+	 * 
+	 */
 }
