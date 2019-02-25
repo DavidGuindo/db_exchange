@@ -2,13 +2,19 @@
 namespace App\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\Date;
-use App\Entity\Category;
+use App\Entity\Users;
 use App\Entity\Message;
 use App\Entity\Service;
-use App\Entity\Users;
+use App\Entity\Category;
+use App\Entity\City;
+
+// $token = $this->get('security.token_storage')->getToken();
+// $user = $token->getUser(); OBTENER USUARIO LOGEADO.
+
 
 /**
  * @Route("/")
@@ -19,22 +25,51 @@ class DefaultController extends Controller {
 	 * @Route("/", name="index")
 	 */
 	public function index(){
+		// Con esto descargamos el usuario logeado
+		$token = $this->get('security.token_storage')->getToken();
+ 		$user = $token->getUser();
+		
 		//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
-		$repositoryService = $this->getDoctrine()->getRepository(Message::class);	
+		$repositoryService = $this->getDoctrine()->getRepository(Service::class);
 		// Descargamos todos los servicios
-
-		//$all_services = $repositoryService->findAll();
-		return $this->render('index.html.twig');		
+		$all_services = $repositoryService->findAll();
+		
+		return $this->render('index.html.twig', ['all_services'=>$all_services, 'userLogged'=>$user]);		
 	}
+
+	/**
+     * @Route("/logout", name="app_logout")
+     */
+    public function salir(Request $request): Response {
+        return $this->index($request);
+
+    }
 
 	/**
 	 * @Route("/AreaPrivada", name="AreaPrivada")
 	 */
 	public function areaPrivada(){
+		//Cogemos los repositorios
+		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+		$repositoryMessage = $this->getDoctrine()->getRepository(Message::class);
+	
+		// Usuario logeado
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser();
 		
-		return $this->render('privada.html.twig');		
-	}
 
+		// Descargamos todos las categorias, usuario y ciudades
+		$all_category = $repositoryCategory->findAll();
+		$all_users = $repositoryUsers->findAll();
+		$all_city = $repositoryCity->findAll();
+
+		// Buscamos los mensajes recibidos del usuario
+		$allMessageRecivingUser = $repositoryMessage->findByUserReciving($user->getId());
+
+		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users, 'allMessageRecivingUser'=>$allMessageRecivingUser, 'all_city'=>$all_city]);		
+	}
 
 	/**
 	 * @Route("/createService", name="createService")
@@ -43,17 +78,28 @@ class DefaultController extends Controller {
 	public function createService(){
 		$entityManager = $this->getDoctrine()->getManager();
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);;
-		// buscamos la categoria por la id que hemos recibido
-		$data['category']->$repositoryCategory->findOneById($_POST['id_category']);
-		$data['name']->$_POST['name'];
-		$data['img']->$_POST['img'];
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);;
+		// buscamos la categoria y la ciudad por la id que hemos recibido
+		$data['city']=$repositoryCity->findOneById($_POST['city']);
+		$data['category']=$repositoryCategory->findOneById($_POST['category']);
+		$data['name']=$_POST['name'];
+
+		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
+        $imagen = $_FILES['img']['name'];
+		$data['img']=$imagen;
+
+		// cogemos el usuario logeado para crear el servicio
+		$token = $this->get('security.token_storage')->getToken();
+		$data['userOffer'] = $token->getUser();
 
 		// creamos objeto
-		$new_serice = new Service($data);
+		$new_service = new Service($data);
 
 		// subimos a base de datos
-		$entityManager->persist($new_serice);
+		$entityManager->persist($new_service);
 		$entityManager->flush();
+
+		return $this->redirectToRoute("AreaPrivada");
 	}
 
 	/**
@@ -63,15 +109,20 @@ class DefaultController extends Controller {
 	public function createCategory(){
 		$entityManager = $this->getDoctrine()->getManager();
 
-		$data['name']->$_POST['name'];
-		$data['img']->$_POST['img'];
+		$data['name']=$_POST['name'];
+		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
+        $imagen = $_FILES['img']['name'];
+		$data['img']=$imagen;
 		
 		//creamos objeto
 		$new_category = new Category($data);
 		
 		// subimos a base de datos
-		$entityManager->persist($new_serice);
+		$entityManager->persist($new_category);
 		$entityManager->flush();
+
+		return $this->redirectToRoute("AreaPrivada");
+
 	}
 
 	/**
@@ -80,17 +131,29 @@ class DefaultController extends Controller {
 	 */
 	public function createMessage(){
 		$entityManager = $this->getDoctrine()->getManager();
+		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);;
 
-		$data['userSend']->$_POST['userSend'];
-		$data['userReciving']->$_POST['userReciving'];
-		$data['bodyMessage']->$_POST['bodyMessage'];
+		// Usuario logeado
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser();
+
+		//buscamos en base de datos el usuario que recibe el mensaje mediante su id
+		$data['userReciving'] = $repositoryUsers->find($_POST['userReciving']);
+		$data['userSend']=$user;
+		$data['bodyMessage']=$_POST['bodyMessage'];
 		
 		//creamos objeto
 		$new_message = new Message($data);
 		
+		echo $new_message->getCheckRead();
+		echo "<br>";
+		echo $new_message->getUserReciving()->getEmail();
+		echo "<br>";
+		echo $new_message->getUserSend()->getEmail();
 		// subimos a base de datos
 		$entityManager->persist($new_message);
 		$entityManager->flush();
+
 
 	}
 	
@@ -102,6 +165,51 @@ class DefaultController extends Controller {
 		return $this->render('contacto.html.twig');		
 	}
 
+	/**
+	 * @Route("/createCity", name="createCity")
+	 * CREAR CIUDAD
+	 */
+	public function createCity(){
+		$entityManager = $this->getDoctrine()->getManager();
+		$data['name']=$_POST['name'];
+		
+		//creamos objeto
+		$new_city = new City($data);
+		
+		// subimos a base de datos
+		$entityManager->persist($new_city);
+		$entityManager->flush();
 
-	
+		return $this->redirectToRoute("AreaPrivada");
+	}
+
+	/**
+	 * @Route("/sendRequest", name="sendRequest")
+	 * METODO QUE ENVIA UNA SOLICITUD DE SERVICIO A UN USUARIO
+	 */
+	public function sendRequest(){
+		$entityManager = $this->getDoctrine()->getManager();
+		$repositoryService = $this->getDoctrine()->getRepository(Service::class);;
+
+		// buscamos el servicio en base de datos con la id que tenemos
+		$service = $repositoryService->find($_POST['serviceId']);
+
+		// cogemos el usuario logeado
+		$token = $this->get('security.token_storage')->getToken();
+		$data['userSend'] = $token->getUser();
+
+
+		$data['userReciving'] = $service->getUserOffer();
+		$data['bodyMessage'] = "El usuario: ".$data['userSend']->getEmail()." solicita tu servicio de ".$service->getName()."";
+
+		// creamos un mensaje con el servicio y el usuario
+		$new_message = new Message($data);
+
+		$entityManager->persist($new_message);
+		$entityManager->flush();
+
+		return $this->redirectToRoute("index");
+	}
+
+
 }
