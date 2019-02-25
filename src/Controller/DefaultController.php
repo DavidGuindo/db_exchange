@@ -4,6 +4,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\Date;
 use App\Entity\Users;
@@ -11,6 +12,7 @@ use App\Entity\Messaje;
 use App\Entity\Service;
 use App\Entity\Category;
 use App\Entity\City;
+
 
 // $token = $this->get('security.token_storage')->getToken();
 // 		$user = $token->getUser();                         			OBTENER USUARIO LOGEADO.
@@ -222,17 +224,24 @@ class DefaultController extends Controller {
 
 			}
 
-		
 
-		$entityManager = $this->getDoctrine()->getManager();
-		$entityManager->merge($user);
-		$entityManager->flush();
+
+			$entityManager = $this->getDoctrine()->getManager();
+			$entityManager->merge($user);
+			$entityManager->flush();
+
+		}
+
+		return $this->render('editarContacto.html.twig', ['userLogeado'=>$user]);
 
 	}
 
-	return $this->render('editarContacto.html.twig', ['userLogeado'=>$user]);
-
-}
-
-
+	/**
+	 * @Route("/baja", name="darDeBaja")
+	 * CREAR MENSAJE
+	 */
+	public function darDeBaja()
+	{
+		
+	}
 }
