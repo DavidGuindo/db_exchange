@@ -6,7 +6,7 @@
       <img src="LOGo">
       <!--ENLACE AL AREA PRIVADA-->
       <a href="#" style="float:right"><img src="../assets/img/user.png" width="50px" height="50px"></a>
-      <button onclick="window.location.href='/editarContacto'" >Editar perfil</button>
+      <button onclick="window.location.href='./editarContacto'" >Editar perfil</button>
       
       <h1>TITULO WEB</h1>
 
@@ -73,32 +73,24 @@
         </form>
       </fieldset>
 
-    <div id="containerMessage">
-      <h1>MENSAJES RECIBIDOS</h1>
-      {% for messageReciving in allMessageRecivingUser %}
-        <div class="message">
-          <p>Fecha: {{messageReciving.getDate}}</p>
-          <p>Usuario que envia: {{messageReciving.getUserSend.getEmail}}</p>
-          <p>Usuario que recibe: {{messageReciving.getUserReciving.getEmail}}</p>
-          <p>Mensaje: {{messageReciving.getBodyMessage}}</p>
+      <div id="containerMessage">
+        <h1>MENSAJES RECIBIDOS</h1>
+        {% for messageReciving in allMessageRecivingUser %}
+          <div class="message">
+            <p>Fecha: {{messageReciving.getDate}}</p>
+            <p>Usuario que envia: {{messageReciving.getUserSend.getEmail}}</p>
+            <p>Usuario que recibe: {{messageReciving.getUserReciving.getEmail}}</p>
+            <p>Mensaje: {{messageReciving.getBodyMessage}}</p>
 
-          <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
-          {% if messageReciving.getCheckRead == 0 %}
-            <p>NO LEIDO</p>
-          {% else %}
-            <p>LEIDO</p>
-          {% endif %}
-
-
-
-        </div>
-      {% endfor %}
-    </div>
-
-
-
-
-
+            <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
+            {% if messageReciving.getCheckRead == 0 %}
+              <p>NO LEIDO</p>
+            {% else %}
+              <p>LEIDO</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
     </main>
 
 
