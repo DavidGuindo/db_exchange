@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar perfil{% endblock %}
+
+{% block body %}
+
+<form action="/editarContacto" method="POST" enctype="multipart/form-data">
+
+	<h2>Rellene solo los campos que desee modificar</h2><br><br>
+
+	<div>
+
+	<label for="Nombre">Nombre: <input type="text" name="nuevoName"></label><br>
+	<label for="Apellidos">Apellidos: <input type="text" name="nuevoLastName"></label><br>
+	<label for="Ciudad">Ciudad: <input type="text" name="nuevoCity"></label><br>
+	<label for="Imagen">Imagen: <input type="file" name="nuevoImg"></label><br>
+	<input type="hidden" name="modificar" value="true"><br>
+
+	<input type="submit" value="Modificar"
+
+	</div>
+
+</form><br>
+
+<form action="/" method="POST">
+<input type="submit" value="Volver a inicio">
+</form>
+
+{% endblock %}

@@ -32,9 +32,14 @@ class Service
     private $img;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\users", inversedBy="services")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Users", inversedBy="services")
      */
     private $userOffer;
+    
+    /*
+     * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="services")
+     */
+    private $city;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="services")
@@ -102,7 +107,16 @@ class Service
     public function setUserOffer(?users $userOffer): self
     {
         $this->userOffer = $userOffer;
+    }
 
+    public function getCity(): ?city
+    {
+        return $this->city;
+    }
+
+    public function setCity(?city $city): self
+    {
+        $this->city = $city;
         return $this;
     }
 

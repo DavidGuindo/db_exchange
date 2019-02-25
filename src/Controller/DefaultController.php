@@ -20,7 +20,7 @@ use App\Entity\City;
  * @Route("/")
  */
 class DefaultController extends Controller {
-   
+
 	/**
 	 * @Route("/", name="index")
 	 */
@@ -29,12 +29,18 @@ class DefaultController extends Controller {
 		$token = $this->get('security.token_storage')->getToken();
  		$user = $token->getUser();
 		
-		//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
+		//descargamos todos los servicios que tenemos en base de datos para mostrar en la vista
 		$repositoryService = $this->getDoctrine()->getRepository(Service::class);
 		// Descargamos todos los servicios
 		$all_services = $repositoryService->findAll();
+
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+		$ciudades = $repositoryCity->findAll();
+
+		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+		$categorias = $repositoryCategory->findAll();
 		
-		return $this->render('index.html.twig', ['all_services'=>$all_services, 'userLogged'=>$user]);		
+		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades, 'all_categories'=>$categorias, 'userLogged'=>$user]);		
 	}
 
 	/**
@@ -42,8 +48,7 @@ class DefaultController extends Controller {
      */
     public function salir(Request $request): Response {
         return $this->index($request);
-
-    }
+	}
 
 	/**
 	 * @Route("/AreaPrivada", name="AreaPrivada")
@@ -85,7 +90,7 @@ class DefaultController extends Controller {
 		$data['name']=$_POST['name'];
 
 		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
-        $imagen = $_FILES['img']['name'];
+		$imagen = $_FILES['img']['name'];
 		$data['img']=$imagen;
 
 		// cogemos el usuario logeado para crear el servicio
@@ -111,7 +116,7 @@ class DefaultController extends Controller {
 
 		$data['name']=$_POST['name'];
 		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
-        $imagen = $_FILES['img']['name'];
+		$imagen = $_FILES['img']['name'];
 		$data['img']=$imagen;
 		
 		//creamos objeto
@@ -211,5 +216,81 @@ class DefaultController extends Controller {
 		return $this->redirectToRoute("index");
 	}
 
+<<<<<<< HEAD
+=======
+	/**
+	 * @Route("/buscador", name="buscar")
+	 * CREAR MENSAJE
+	 */
+	public function filtro(){
+
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+
+		$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
+
+		$todosServicios = $ciudad->getServices();
+
+		foreach ($todosServicios as $key => $value) {
+			if($value->getCategory == $_POST['categoriaElegida']){
+				$servicios[] = $todosServicios[$key];
+			}
+		}
+
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+		$ciudades = $repositoryCity->findAll();
+
+		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+		$categorias = $repositoryCategory->findAll();
+		
+		return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_cities'=>$ciudades, 'all_categories'=>$categorias, 'userLogged'=>$user]);		
+	}
+
+	/**
+	 * @Route("/editarContacto", name="editar")
+	 * CREAR MENSAJE
+	 */
+	public function editarPerfil(){
+
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser(); 
+
+		if(isset($_POST['modificar'])){
+
+			if($_POST['nuevoName'] != ""){
+
+				$user->setName($_POST['nuevoName']);
+
+			}
+
+			if($_POST['nuevoLastName'] != ""){
+
+				$user->setLastName($_POST['nuevoLastName']);
+
+			}
+
+			if($_POST['nuevoCity'] != ""){
+
+				$user->setCity($_POST['nuevoCity']);
+
+			}
+
+			if ($_FILES['nuevoImg']['name'] != null) {
+
+				move_uploaded_file($_FILES['nuevoImg']['tmp_name'], $_FILES['nuevoImg']['name']);
+				$imagen = $_FILES['nuevoImg']['name'];
+				$user->setImg($imagen);
+
+			}
+
+			$entityManager = $this->getDoctrine()->getManager();
+			$entityManager->merge($user);
+			$entityManager->flush();
+		}
+
+		return $this->render('editarContacto.html.twig', ['userLogeado'=>$user]);
+
+	}
+
+>>>>>>> 06347ec57dbc4530810868f285dfcc750ad3ea7b
 
 }

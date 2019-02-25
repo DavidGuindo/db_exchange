@@ -67,16 +67,17 @@ class Users implements UserInterface
      */
     private $services;
 
-    public function __construct()
-    {
-        $this->services = new ArrayCollection();
-    }
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $img;
 
     /**
      * Contrsctor del objeto
      */
     public function __contsruct($data){
         $this->messages = new ArrayCollection();
+        $this->services = new ArrayCollection();
         $this->email = $data['email'];
         $this->password = $data['password'];
         $this->name = $data['name'];
@@ -84,7 +85,6 @@ class Users implements UserInterface
         $this->city = $data['city'];
         $this->time = 0;        
     }
-
 
     public function getId(): ?int
     {
@@ -270,7 +270,25 @@ class Users implements UserInterface
                 $service->setUserOffer(null);
             }
         }
+    }
+    
+    public function comprobarSaldo($cantidad){  //en cantidad le pasaremos lo que se le va a cobrar
+        if($this->time - $cantidad < 300){
+            return false;
+        }else{
+           return true;
+       }
+       
+   }
 
+    public function getImg(): ?string
+    {
+        return $this->img;
+    }
+
+    public function setImg(string $img): self
+    {
+        $this->img = $img;
         return $this;
     }
 }

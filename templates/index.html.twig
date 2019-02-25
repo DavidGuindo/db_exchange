@@ -2,6 +2,7 @@
 
 {% block body %}
 
+<<<<<<< HEAD
   <div class="container">
     <main class="col-xl-8 col-lg-8 col-md-10 col-sm-11 mx-auto my-5 text-white text-justify">
         <section>
@@ -18,6 +19,39 @@
                       </article>
               </div>
         </section>
+=======
+    <header>
+
+        <img src="LOGo">
+         <!--ENLACE AL AREA PRIVADA-->
+         <a href="./AreaPrivada"><img src="../assets/img/user.png" width="50px" height="50px" class="float-right"></a>
+         
+       
+         <h1>TITULO WEB</h1>
+
+         <!--MENU CON BOOSTRAP-->
+      <div class="container" id="nav">
+        <nav class="nav nav-pills nav-justified mt-2">
+          <a class="nav-link nav-item" href="#">Opción 1</a>
+          <a class="nav-link nav-item active" href="#">Opción 2</a>
+          <a class="nav-link nav-item" href="#">Opción 3</a>
+          <a class="nav-link nav-item" href="#">Opción 4</a>
+          <a class="nav-link nav-item disabled" href="#">Opción 5</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section>
+          <!--CABEZERA INTRODUCCIÓN-->
+          <h2>TITULO</h2>
+          <p>TEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTO
+              TEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTO
+              TEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTO
+              TEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTO
+          </p>
+      </section>
+>>>>>>> 06347ec57dbc4530810868f285dfcc750ad3ea7b
 
 
        <!--CAROUSEL CON CATEGORIAS-->
@@ -50,15 +84,27 @@
       </div>-->
 
       <section>
-
+      <br><br>
         <!--AQUI APARECERAN UNA LISTA DE SERVICIOS CON UNA BARRA PARA SELECCIONAR CATEGORIA ARRIBA Y PODER FILTRAR-->
-        <select>
-            <option value="0">SELECCIONE UNA CATEGORÍA</option>
-        </select>
-        <input type="submit" value="Filtrar">
+        <form action="./buscador" method="POST">
+          <select name="ciudadElegida">
+              <option value="0">SELECCIONE UNA CIUDAD</option>
+              {% for city in all_cities %}
+              <option value="{{city.name}}">{{city.name}}</option>
+              {% endfor %}
+          </select>
+          <select name="categoriaElegida">
+              <option value="0">SELECCIONE UNA CATEGORIA</option>
+              {% for category in all_categories %}
+              <option value="{{category.name}}">{{category.name}}</option>
+              {% endfor %}
+          </select>
 
-        <table style="width: 100%">
-        
+          <input type="submit" value="Filtrar">
+        </form>
+
+        <table style="width:100%">
+
           {% set counter = 1 %}
 
           {% for service in all_services %}
