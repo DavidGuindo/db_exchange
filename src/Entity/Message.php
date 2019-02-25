@@ -17,7 +17,7 @@ class Message
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\users", inversedBy="messages")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Users", inversedBy="messages")
      */
     private $userSend;
 

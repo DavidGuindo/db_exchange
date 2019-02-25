@@ -1,33 +1,32 @@
-@import '~bootstrap-sass/assets/stylesheets/bootstrap';
+/*@import '~bootstrap-sass/assets/stylesheets/bootstrap';*/
 
 body {
-    width: 80%;
-    margin: 0 auto;
-}
+    background-image: url('../public/img/fondo5.jpg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    /* La imagen se fija en la ventana de visualización para que la altura de la imagen no supere a la del contenido */
+    background-attachment: fixed;
+    /* La imagen de fondo se reescala automáticamente con el cambio del ancho de ventana del navegador */
+    background-size: cover;
+    background-color: #cccccc;
+    }
+    
+    .container-login {
+      margin-top: 150px;
+      margin-bottom: 150px;
+    }
 
-header {
-    background-color: red;
-}
-
-header nav {
-    background-color: black;
-}
-
-main {
-    margin: 0% auto;
-    background-color: chartreuse;
-}
-
-footer {
-    background-color: blue;
-}
-
-.card {
-    background-color: #999;
-}
-
-#services{
-    width: 80%;
-    margin: 0 auto;
-    margin-top: 5px;
-}
+    .container-register {
+      margin-top: 150px;
+      margin-bottom: 150px;
+    }
+    
+    .bg-login {
+      background-color: #996633;
+    }
+    
+    nav {
+        position: sticky;
+        top: 0; 
+        width: 100%;
+    }
