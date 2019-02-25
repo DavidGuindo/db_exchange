@@ -37,12 +37,18 @@ class Service
     private $userOffer;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="services")
+     */
+    private $city;
+
+    /**
      * Contructor de la clase
      */
     public function __construct($data){
         $this->name=$data['name'];
         $this->img=$data['img'];
         $this->category=$data['category'];
+        $this->city=$data['city'];
         $this->userOffer=$data['userOffer'];
     }
 
@@ -96,6 +102,18 @@ class Service
     public function setUserOffer(?users $userOffer): self
     {
         $this->userOffer = $userOffer;
+
+        return $this;
+    }
+
+    public function getCity(): ?city
+    {
+        return $this->city;
+    }
+
+    public function setCity(?city $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }

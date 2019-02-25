@@ -33,7 +33,7 @@
 
       <fieldset>
         <legend>CREAR CATEGORÍA</legend>
-        <form action="./createCategory" method="POST">
+        <form enctype="multipart/form-data" action="./createCategory" method="POST">
           Nombre: <input type="text" name="name">
           Imagen: <input type="file" name="img">
           <input type="submit" value="Crear categoria">
@@ -42,12 +42,18 @@
       
       <fieldset>
         <legend>CREAR SERVICIO</legend>
-        <form action="./createService" method="POST">
+        <form enctype="multipart/form-data" action="./createService" method="POST">
           Nombre: <input type="text" name="name">
           
           Categoría: <select name="category">
             {% for category in all_category %}
               <option value="{{category.getId}}">{{category.getName}}</option>
+            {% endfor %}
+          </select>
+
+          Ciudad: <select name="city">
+            {% for city in all_city %}
+              <option value="{{city.getId}}">{{city.getName}}</option>
             {% endfor %}
           </select>
           
@@ -73,32 +79,24 @@
         </form>
       </fieldset>
 
-    <div id="containerMessage">
-      <h1>MENSAJES RECIBIDOS</h1>
-      {% for messageReciving in allMessageRecivingUser %}
-        <div class="message">
-          <p>Fecha: {{messageReciving.getDate}}</p>
-          <p>Usuario que envia: {{messageReciving.getUserSend.getEmail}}</p>
-          <p>Usuario que recibe: {{messageReciving.getUserReciving.getEmail}}</p>
-          <p>Mensaje: {{messageReciving.getBodyMessage}}</p>
+      <div id="containerMessage">
+        <h1>MENSAJES RECIBIDOS</h1>
+        {% for messageReciving in allMessageRecivingUser %}
+          <div class="message">
+            <p>Fecha: {{messageReciving.getDate}}</p>
+            <p>Usuario que envia: {{messageReciving.getUserSend.getEmail}}</p>
+            <p>Usuario que recibe: {{messageReciving.getUserReciving.getEmail}}</p>
+            <p>Mensaje: {{messageReciving.getBodyMessage}}</p>
 
-          <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
-          {% if messageReciving.getCheckRead == 0 %}
-            <p>NO LEIDO</p>
-          {% else %}
-            <p>LEIDO</p>
-          {% endif %}
-
-
-
-        </div>
-      {% endfor %}
-    </div>
-
-
-
-
-
+            <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
+            {% if messageReciving.getCheckRead == 0 %}
+              <p>NO LEIDO</p>
+            {% else %}
+              <p>LEIDO</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
     </main>
 
 

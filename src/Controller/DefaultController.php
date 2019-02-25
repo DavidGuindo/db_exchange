@@ -53,6 +53,7 @@ class DefaultController extends Controller {
 		//Cogemos los repositorios
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 		$repositoryMessage = $this->getDoctrine()->getRepository(Message::class);
 	
 		// Usuario logeado
@@ -60,14 +61,15 @@ class DefaultController extends Controller {
 		$user = $token->getUser();
 		
 
-		// Descargamos todos las categorias y usuarios
+		// Descargamos todos las categorias, usuario y ciudades
 		$all_category = $repositoryCategory->findAll();
 		$all_users = $repositoryUsers->findAll();
+		$all_city = $repositoryCity->findAll();
 
 		// Buscamos los mensajes recibidos del usuario
 		$allMessageRecivingUser = $repositoryMessage->findByUserReciving($user->getId());
 
-		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users, 'allMessageRecivingUser'=>$allMessageRecivingUser]);		
+		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users, 'allMessageRecivingUser'=>$allMessageRecivingUser, 'all_city'=>$all_city]);		
 	}
 
 	/**
@@ -77,7 +79,9 @@ class DefaultController extends Controller {
 	public function createService(){
 		$entityManager = $this->getDoctrine()->getManager();
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);;
-		// buscamos la categoria por la id que hemos recibido
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);;
+		// buscamos la categoria y la ciudad por la id que hemos recibido
+		$data['city']=$repositoryCity->findOneById($_POST['city']);
 		$data['category']=$repositoryCategory->findOneById($_POST['category']);
 		$data['name']=$_POST['name'];
 
@@ -177,11 +181,28 @@ class DefaultController extends Controller {
 	 * @Route("/sendRequest", name="sendRequest")
 	 * METODO QUE ENVIA UNA SOLICITUD DE SERVICIO A UN USUARIO
 	 */
-	PUBLIC FUNCTION sendRequest(){
+	public function sendRequest(){
 		$entityManager = $this->getDoctrine()->getManager();
+		$repositoryService = $this->getDoctrine()->getRepository(Service::class);;
+
+		// buscamos el servicio en base de datos con la id que tenemos
+		$service = $repositoryService->find($_POST['serviceId']);
+
+		// cogemos el usuario logeado
+		$token = $this->get('security.token_storage')->getToken();
+		$data['userSend'] = $token->getUser();
 
 
+		$data['userReciving'] = $service->getUserOffer();
+		$data['bodyMessage'] = "El usuario: ".$data['userSend']->getEmail()." solicita tu servicio de ".$service->getName()."";
 
+		// creamos un mensaje con el servicio y el usuario
+		$new_message = new Message($data);
+
+		$entityManager->persist($new_message);
+		$entityManager->flush();
+
+		return $this->redirectToRoute("index");
 	}
 
 }
