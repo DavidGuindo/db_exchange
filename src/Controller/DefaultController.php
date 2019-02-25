@@ -194,48 +194,41 @@ class DefaultController extends Controller {
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser(); 
 
-	// 	var_dump($user);
-	// 	die;
+		if(isset($_POST['modificar'])){
 
-	// 	$nuevoUser() = new Users();
+			if($_POST['nuevoName'] != ""){
 
-	// 	$nuevoUser->setName($user->getName());
+				$user->setName($_POST['nuevoName']);
 
-	// 	if(isset($_POST['modificar'])){
+			}
 
-	// 		if($_POST['nuevoName'] != ""){
+			if($_POST['nuevoLastName'] != ""){
 
-	// 			$user->setName($_POST['nuevoName']);
+				$user->setLastName($_POST['nuevoLastName']);
 
-	// 		}
+			}
 
-	// 		if($_POST['nuevoLastName'] != ""){
+			if($_POST['nuevoCity'] != ""){
 
-	// 			$user->setLastName($_POST['nuevoLastName']);
+				$user->setCity($_POST['nuevoCity']);
 
-	// 		}
+			}
 
-	// 		if($_POST['nuevoCity'] != ""){
+			if ($_FILES['nuevoImg']['name'] != null) {
 
-	// 			$user->setCity($_POST['nuevoCity']);
+				move_uploaded_file($_FILES['nuevoImg']['tmp_name'], $_FILES['nuevoImg']['name']);
+				$imagen = $_FILES['nuevoImg']['name'];
+				$user->setImg($imagen);
 
-	// 		}
-
-	// 		if($_FILES['nuevoImg'] != ""){
-
-	// 			move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
-	// 			$imagen = $_FILES['img']['name'];
-	// 			$user->setImg($imagen);
-
-	// 		}
+			}
 
 		
 
-	// 	$entityManager = $this->getDoctrine()->getManager();
-	// 	$entityManager->merge($user);
-	// 	$entityManager->flush();
+		$entityManager = $this->getDoctrine()->getManager();
+		$entityManager->merge($user);
+		$entityManager->flush();
 
-	// }
+	}
 
 	return $this->render('editarContacto.html.twig', ['userLogeado'=>$user]);
 
