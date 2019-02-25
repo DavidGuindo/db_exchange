@@ -63,6 +63,16 @@ class Users implements UserInterface
     private $messages;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Service", mappedBy="userOffer")
+     */
+    private $services;
+
+    public function __construct()
+    {
+        $this->services = new ArrayCollection();
+    }
+
+    /**
      * Contrsctor del objeto
      */
     public function __contsruct($data){
@@ -227,6 +237,37 @@ class Users implements UserInterface
             // set the owning side to null (unless already changed)
             if ($message->getUserSend() === $this) {
                 $message->setUserSend(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Service[]
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(Service $service): self
+    {
+        if (!$this->services->contains($service)) {
+            $this->services[] = $service;
+            $service->setUserOffer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(Service $service): self
+    {
+        if ($this->services->contains($service)) {
+            $this->services->removeElement($service);
+            // set the owning side to null (unless already changed)
+            if ($service->getUserOffer() === $this) {
+                $service->setUserOffer(null);
             }
         }
 

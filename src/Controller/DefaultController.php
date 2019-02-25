@@ -13,7 +13,7 @@ use App\Entity\Category;
 use App\Entity\City;
 
 // $token = $this->get('security.token_storage')->getToken();
-// 		$user = $token->getUser();                         			OBTENER USUARIO LOGEADO.
+// $user = $token->getUser(); OBTENER USUARIO LOGEADO.
 
 
 
@@ -29,8 +29,7 @@ class DefaultController extends Controller {
 		// Con esto descargamos el usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
  		$user = $token->getUser();
-	
-	
+		
 		//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
 		$repositoryService = $this->getDoctrine()->getRepository(Service::class);
 		// Descargamos todos los servicios
@@ -42,8 +41,7 @@ class DefaultController extends Controller {
 	/**
      * @Route("/logout", name="app_logout")
      */
-    public function salir(Request $request): Response
-    {
+    public function salir(Request $request): Response {
         return $this->index($request);
 
     }
@@ -52,17 +50,25 @@ class DefaultController extends Controller {
 	 * @Route("/AreaPrivada", name="AreaPrivada")
 	 */
 	public function areaPrivada(){
-		//descargamos todos las categorias y usuarios que tenemos en base de datos para mostrar en la vista
+		//Cogemos los repositorios
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
 		$repositoryMessage = $this->getDoctrine()->getRepository(Message::class);
+	
+		// Usuario logeado
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser();
+		
+
 		// Descargamos todos las categorias y usuarios
 		$all_category = $repositoryCategory->findAll();
 		$all_users = $repositoryUsers->findAll();
-		//$all_message = $repositoryMessage->findByUserSend($IDUSUARIO LOGEADO);
-		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users/*, 'all_message'=>$all_message*/]);		
-	}
 
+		// Buscamos los mensajes recibidos del usuario
+		$allMessageRecivingUser = $repositoryMessage->findByUserReciving($user->getId());
+
+		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users, 'allMessageRecivingUser'=>$allMessageRecivingUser]);		
+	}
 
 	/**
 	 * @Route("/createService", name="createService")
@@ -78,6 +84,10 @@ class DefaultController extends Controller {
 		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
         $imagen = $_FILES['img']['name'];
 		$data['img']=$imagen;
+
+		// cogemos el usuario logeado para crear el servicio
+		$token = $this->get('security.token_storage')->getToken();
+		$data['userOffer'] = $token->getUser();
 
 		// creamos objeto
 		$new_service = new Service($data);
@@ -118,14 +128,25 @@ class DefaultController extends Controller {
 	 */
 	public function createMessage(){
 		$entityManager = $this->getDoctrine()->getManager();
+		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);;
 
-		$data['userSend']=$_POST['userSend'];
-		$data['userReciving']=$_POST['userReciving'];
+		// Usuario logeado
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser();
+
+		//buscamos en base de datos el usuario que recibe el mensaje mediante su id
+		$data['userReciving'] = $repositoryUsers->find($_POST['userReciving']);
+		$data['userSend']=$user;
 		$data['bodyMessage']=$_POST['bodyMessage'];
 		
 		//creamos objeto
 		$new_message = new Message($data);
 		
+		echo $new_message->getCheckRead();
+		echo "<br>";
+		echo $new_message->getUserReciving()->getEmail();
+		echo "<br>";
+		echo $new_message->getUserSend()->getEmail();
 		// subimos a base de datos
 		$entityManager->persist($new_message);
 		$entityManager->flush();
@@ -153,7 +174,14 @@ class DefaultController extends Controller {
 	}
 
 	/**
-	 * @Route("/list", name="createCity")
-	 * 
+	 * @Route("/sendRequest", name="sendRequest")
+	 * METODO QUE ENVIA UNA SOLICITUD DE SERVICIO A UN USUARIO
 	 */
+	PUBLIC FUNCTION sendRequest(){
+		$entityManager = $this->getDoctrine()->getManager();
+
+
+
+	}
+
 }

@@ -49,12 +49,12 @@ class MessageRepository extends ServiceEntityRepository
     */
 
     /**
-     * Funcion que devuelve todos los mensaje de un usuario
+     * Funcion que devuelve todos los mensaje recibidos de un usuario
      */
-    public function findByUserSend($value)
+    public function findByUserReciving($value)
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.userSend = :val')
+            ->andWhere('m.userReciving = :val')
             ->setParameter('val', $value)
             ->orderBy('m.id', 'ASC')
             ->getQuery()

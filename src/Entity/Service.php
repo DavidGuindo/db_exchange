@@ -32,12 +32,18 @@ class Service
     private $img;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\users", inversedBy="services")
+     */
+    private $userOffer;
+
+    /**
      * Contructor de la clase
      */
     public function __construct($data){
         $this->name=$data['name'];
         $this->img=$data['img'];
         $this->category=$data['category'];
+        $this->userOffer=$data['userOffer'];
     }
 
 
@@ -78,6 +84,18 @@ class Service
     public function setImg(string $img): self
     {
         $this->img = $img;
+
+        return $this;
+    }
+
+    public function getUserOffer(): ?users
+    {
+        return $this->userOffer;
+    }
+
+    public function setUserOffer(?users $userOffer): self
+    {
+        $this->userOffer = $userOffer;
 
         return $this;
     }

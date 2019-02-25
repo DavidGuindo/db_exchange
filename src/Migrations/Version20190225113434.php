@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20190224111108 extends AbstractMigration
+final class Version20190225113434 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,7 +22,7 @@ final class Version20190224111108 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-       // $this->addSql('ALTER TABLE users CHANGE roles roles JSON NOT NULL');
+        $this->addSql('ALTER TABLE users CHANGE roles roles LONGTEXT NOT NULL');
     }
 
     public function down(Schema $schema) : void
