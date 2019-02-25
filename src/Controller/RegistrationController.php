@@ -41,6 +41,8 @@ class RegistrationController extends AbstractController
 
             // do anything else you need here, like send an email
 
+            return $this->redirectToRoute("app_login");
+
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $user,
                 $request,
@@ -48,6 +50,7 @@ class RegistrationController extends AbstractController
                 'main' // firewall name in security.yaml
             );
         }
+
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),

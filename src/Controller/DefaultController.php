@@ -21,7 +21,7 @@ use App\Entity\City;
  * @Route("/")
  */
 class DefaultController extends Controller {
-   
+
 	/**
 	 * @Route("/", name="index")
 	 */
@@ -38,17 +38,17 @@ class DefaultController extends Controller {
 		$categorias = $repositoryCategory->findAll();
 		
 		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades,
-		 'all_categories'=>$categorias]);		
+			'all_categories'=>$categorias]);		
 	}
 
 	/**
      * @Route("/logout", name="app_logout")
      */
-    public function salir(Request $request): Response
-    {
-        return $this->index($request);
+	public function salir(Request $request): Response
+	{
+		return $this->index($request);
 
-    }
+	}
 
 	/**
 	 * @Route("/AreaPrivada", name="AreaPrivada")
@@ -76,7 +76,7 @@ class DefaultController extends Controller {
 		$data['name']=$_POST['name'];
 
 		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
-        $imagen = $_FILES['img']['name'];
+		$imagen = $_FILES['img']['name'];
 		$data['img']=$imagen;
 
 		// creamos objeto
@@ -98,7 +98,7 @@ class DefaultController extends Controller {
 
 		$data['name']=$_POST['name'];
 		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
-        $imagen = $_FILES['img']['name'];
+		$imagen = $_FILES['img']['name'];
 		$data['img']=$imagen;
 		
 		//creamos objeto
@@ -182,12 +182,64 @@ class DefaultController extends Controller {
 		$categorias = $repositoryCategory->findAll();
 		
 		return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_cities'=>$ciudades,
-		 'all_categories'=>$categorias]);		
+			'all_categories'=>$categorias]);		
 	}
 
-	
+	/**
+	 * @Route("/editarContacto", name="editar")
+	 * CREAR MENSAJE
+	 */
+	public function editarPerfil(){
 
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser(); 
 
+	// 	var_dump($user);
+	// 	die;
+
+	// 	$nuevoUser() = new Users();
+
+	// 	$nuevoUser->setName($user->getName());
+
+	// 	if(isset($_POST['modificar'])){
+
+	// 		if($_POST['nuevoName'] != ""){
+
+	// 			$user->setName($_POST['nuevoName']);
+
+	// 		}
+
+	// 		if($_POST['nuevoLastName'] != ""){
+
+	// 			$user->setLastName($_POST['nuevoLastName']);
+
+	// 		}
+
+	// 		if($_POST['nuevoCity'] != ""){
+
+	// 			$user->setCity($_POST['nuevoCity']);
+
+	// 		}
+
+	// 		if($_FILES['nuevoImg'] != ""){
+
+	// 			move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
+	// 			$imagen = $_FILES['img']['name'];
+	// 			$user->setImg($imagen);
+
+	// 		}
+
+		
+
+	// 	$entityManager = $this->getDoctrine()->getManager();
+	// 	$entityManager->merge($user);
+	// 	$entityManager->flush();
+
+	// }
+
+	return $this->render('editarContacto.html.twig', ['userLogeado'=>$user]);
+
+}
 
 
 }
