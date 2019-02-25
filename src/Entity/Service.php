@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -42,6 +44,16 @@ class Service
     private $city;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $time;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Request", mappedBy="service")
+     */
+    private $requests;
+
+    /**
      * Contructor de la clase
      */
     public function __construct($data){
@@ -50,6 +62,8 @@ class Service
         $this->category=$data['category'];
         $this->city=$data['city'];
         $this->userOffer=$data['userOffer'];
+        $this->time=$data['time'];
+        $this->requests = new ArrayCollection();
     }
 
 
@@ -116,6 +130,49 @@ class Service
     public function setCity(?city $city): self
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    public function getTime(): ?int
+    {
+        return $this->time;
+    }
+
+    public function setTime(int $time): self
+    {
+        $this->time = $time;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Request[]
+     */
+    public function getRequests(): Collection
+    {
+        return $this->requests;
+    }
+
+    public function addRequest(Request $request): self
+    {
+        if (!$this->requests->contains($request)) {
+            $this->requests[] = $request;
+            $request->setService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRequest(Request $request): self
+    {
+        if ($this->requests->contains($request)) {
+            $this->requests->removeElement($request);
+            // set the owning side to null (unless already changed)
+            if ($request->getService() === $this) {
+                $request->setService(null);
+            }
+        }
 
         return $this;
     }

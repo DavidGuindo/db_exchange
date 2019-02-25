@@ -2,7 +2,6 @@
 namespace App\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -11,13 +10,12 @@ use App\Entity\Users;
 use App\Entity\Message;
 use App\Entity\Service;
 use App\Entity\Category;
+use App\Entity\Request;
 use App\Entity\City;
 
 
 // $token = $this->get('security.token_storage')->getToken();
 // $user = $token->getUser(); OBTENER USUARIO LOGEADO.
-
-
 
 /**
  * @Route("/")
@@ -63,12 +61,13 @@ class DefaultController extends Controller {
 	}
 
 	/**
-	 * @Route("/AreaPrivada", name="AreaPrivada")
+	 * @Route("/areaprivada", name="areaprivada")
 	 */
-	public function areaPrivada(){
+	public function areaprivada(){
 		//Cogemos los repositorios
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
+		$repositoryRequest = $this->getDoctrine()->getRepository(Request::class);
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 		$repositoryMessage = $this->getDoctrine()->getRepository(Message::class);
 
@@ -77,15 +76,16 @@ class DefaultController extends Controller {
 		$user = $token->getUser();
 		
 
-		// Descargamos todos las categorias, usuario y ciudades
+		// Descargamos todos las categorias, usuario, solicitudes y ciudades
 		$all_category = $repositoryCategory->findAll();
 		$all_users = $repositoryUsers->findAll();
 		$all_city = $repositoryCity->findAll();
+		$all_request = $repositoryRequest->findAll();
 
 		// Buscamos los mensajes recibidos del usuario
 		$allMessageRecivingUser = $repositoryMessage->findByUserReciving($user->getId());
 
-		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users, 'allMessageRecivingUser'=>$allMessageRecivingUser, 'all_city'=>$all_city]);		
+		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users, 'allMessageRecivingUser'=>$allMessageRecivingUser, 'all_city'=>$all_city, 'all_request'=>$all_request]);		
 	}
 
 	/**
@@ -100,6 +100,7 @@ class DefaultController extends Controller {
 		$data['city']=$repositoryCity->findOneById($_POST['city']);
 		$data['category']=$repositoryCategory->findOneById($_POST['category']);
 		$data['name']=$_POST['name'];
+		$data['time']=$_POST['time'];
 
 		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
 		$imagen = $_FILES['img']['name'];
@@ -116,7 +117,7 @@ class DefaultController extends Controller {
 		$entityManager->persist($new_service);
 		$entityManager->flush();
 
-		return $this->redirectToRoute("AreaPrivada");
+		return $this->redirectToRoute("areaprivada");
 	}
 
 	/**
@@ -138,7 +139,7 @@ class DefaultController extends Controller {
 		$entityManager->persist($new_category);
 		$entityManager->flush();
 
-		return $this->redirectToRoute("AreaPrivada");
+		return $this->redirectToRoute("areaprivada");
 
 	}
 
@@ -171,7 +172,7 @@ class DefaultController extends Controller {
 		$entityManager->persist($new_message);
 		$entityManager->flush();
 
-		return $this->redirectToRoute("AreaPrivada");
+		return $this->redirectToRoute("areaprivada");
 
 	}
 
@@ -190,7 +191,7 @@ class DefaultController extends Controller {
 		$entityManager->persist($new_city);
 		$entityManager->flush();
 
-		return $this->redirectToRoute("AreaPrivada");
+		return $this->redirectToRoute("areaprivada");
 	}
 
 
@@ -301,20 +302,16 @@ class DefaultController extends Controller {
 		$repositoryService = $this->getDoctrine()->getRepository(Service::class);;
 
 		// buscamos el servicio en base de datos con la id que tenemos
-		$service = $repositoryService->find($_POST['serviceId']);
+		$data['service'] = $repositoryService->find($_POST['serviceId']);
 
 		// cogemos el usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
-		$data['userSend'] = $token->getUser();
-
-
-		$data['userReciving'] = $service->getUserOffer();
-		$data['bodyMessage'] = "El usuario: ".$data['userSend']->getEmail()." solicita tu servicio de ".$service->getName()."";
+		$data['userRequest'] = $token->getUser();
 
 		// creamos un mensaje con el servicio y el usuario
-		$new_message = new Message($data);
+		$newRequest = new Request($data);
 
-		$entityManager->persist($new_message);
+		$entityManager->persist($newRequest);
 		$entityManager->flush();
 
 		return $this->redirectToRoute("index");
