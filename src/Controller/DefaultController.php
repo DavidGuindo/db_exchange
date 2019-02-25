@@ -16,7 +16,6 @@ use App\Entity\City;
 // $user = $token->getUser(); OBTENER USUARIO LOGEADO.
 
 
-
 /**
  * @Route("/")
  */
