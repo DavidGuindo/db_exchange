@@ -63,15 +63,27 @@
       </div>
 
       <section>
-
+      <br><br>
         <!--AQUI APARECERAN UNA LISTA DE SERVICIOS CON UNA BARRA PARA SELECCIONAR CATEGORIA ARRIBA Y PODER FILTRAR-->
-        <select>
-            <option value="0">SELECCIONE UNA CATEGORÍA</option>
-        </select>
-        <input type="submit" value="Filtrar">
+        <form action="./buscador" method="POST">
+          <select name="ciudadElegida">
+              <option value="0">SELECCIONE UNA CIUDAD</option>
+              {% for city in all_cities %}
+              <option value="{{city.name}}">{{city.name}}</option>
+              {% endfor %}
+          </select>
+          <select name="categoriaElegida">
+              <option value="0">SELECCIONE UNA CATEGORIA</option>
+              {% for category in all_categories %}
+              <option value="{{category.name}}">{{category.name}}</option>
+              {% endfor %}
+          </select>
 
-        <table style="width: 100%">
-        
+          <input type="submit" value="Filtrar">
+        </form>
+
+        <table style="width:100%">
+
           {% set counter = 1 %}
 
           {% for service in all_services %}

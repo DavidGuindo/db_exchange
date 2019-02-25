@@ -30,12 +30,18 @@ class DefaultController extends Controller {
 		$token = $this->get('security.token_storage')->getToken();
  		$user = $token->getUser();
 		
-		//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
+		//descargamos todos los servicios que tenemos en base de datos para mostrar en la vista
 		$repositoryService = $this->getDoctrine()->getRepository(Service::class);
 		// Descargamos todos los servicios
 		$all_services = $repositoryService->findAll();
+
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+		$ciudades = $repositoryCity->findAll();
+
+		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+		$categorias = $repositoryCategory->findAll();
 		
-		return $this->render('index.html.twig', ['all_services'=>$all_services, 'userLogged'=>$user]);		
+		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades, 'all_categories'=>$categorias, 'userLogged'=>$user]);		
 	}
 
 	/**
@@ -177,11 +183,37 @@ class DefaultController extends Controller {
 	 * @Route("/sendRequest", name="sendRequest")
 	 * METODO QUE ENVIA UNA SOLICITUD DE SERVICIO A UN USUARIO
 	 */
-	PUBLIC FUNCTION sendRequest(){
+	public function sendRequest(){
 		$entityManager = $this->getDoctrine()->getManager();
 
 
 
 	}
 
+	/**
+	 * @Route("/buscador", name="buscar")
+	 * CREAR MENSAJE
+	 */
+	public function filtro(){
+
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+
+		$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
+
+		$todosServicios = $ciudad->getServices();
+
+		foreach ($todosServicios as $key => $value) {
+			if($value->getCategory == $_POST['categoriaElegida']){
+				$servicios[] = $todosServicios[$key];
+			}
+		}
+
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+		$ciudades = $repositoryCity->findAll();
+
+		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+		$categorias = $repositoryCategory->findAll();
+		
+		return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_cities'=>$ciudades, 'all_categories'=>$categorias, 'userLogged'=>$user]);		
+	}
 }
