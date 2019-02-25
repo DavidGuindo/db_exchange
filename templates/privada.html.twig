@@ -81,7 +81,7 @@
       </fieldset>
 
       <div id="containerMessage">
-        <h1>MENSAJES RECIBIDOS</h1>
+        <h2>MENSAJES RECIBIDOS</h2>
         {% for messageReciving in allMessageRecivingUser %}
           <div class="message">
             <p>Fecha: {{messageReciving.getDate}}</p>
@@ -99,27 +99,32 @@
         {% endfor %}
       </div>
 
-
-
       <div id="containerRequest">
-        <h1>SOLICITUDES RECIBIDAS</h1>
+        <h2>SOLICITUDES RECIBIDAS</h2>
         {% for request in all_request %}
           <div class="request">
-            <p>El usuario {{request.getUserRequest.getEmail}} a solicitado tu servicio de {{request.getService.getName}}</p>
-            <p>Fecha: {{request.getDate}}</p>
-
             {% if request.accept == 0 %}
+              <p>El usuario {{request.getUserRequest.getEmail}} a solicitado tu servicio de {{request.getService.getName}}</p>
+              <p>Fecha: {{request.getDate}}</p>
               <!--FORMULARIO PARA ACEPTAR O RECHAZAR LA OFERTA-->
-              <form>
+              <form action="./acceptRequest" method="POST">
                 <input type="submit" name="accept" value="Aceptar">
                 <input type="submit" name="deny" value="Rechazar">
+                <input type="hidden" name="requestId" value="{{request.getId}}">
               </form>
 
             {% else %}
-            <!--FORMULARIO MARCAR COMO FINALIZADO EL SERVICIO-->
-              <form>
-                <input type="submit" name="finish" value="Finalizado">
-              </form>
+
+              {% if request.finish == 0 %}
+                <p>El usuario {{request.getUserRequest.getEmail}} a solicitado tu servicio de {{request.getService.getName}}</p>
+                <p>Fecha: {{request.getDate}}</p>
+                <!--FORMULARIO MARCAR COMO FINALIZADO EL SERVICIO-->
+                <form action="./finishRequest" method="POST">
+                  <input type="hidden" name="requestId" value="{{request.getId}}">
+                  <input type="submit" name="finish" value="Finalizado">
+                </form>
+              {% endif %}
+
             {% endif %}
           </div>
         {% endfor %}
@@ -129,7 +134,6 @@
 
     <footer>
         <form action="" method="POST">
-
             Email: <input type="text" name="email">
             Nombre: <input type="text" name="name">
             Teléfono: <input type="text" name="telephone">
@@ -137,33 +141,4 @@
             <input type="submit" name="send" value="Contactar">
         </form>
     </footer>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 {% endblock %}

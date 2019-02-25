@@ -202,4 +202,54 @@ class DefaultController extends Controller {
 		return $this->redirectToRoute("index");
 	}
 
+
+	/**
+	 * @Route("/acceptRequest", name="acceptRequest")
+	 * METODO QUE ACEPTA LA SOLICITUD DE UN SERVICIO
+	 */
+	public function acceptRequest(){
+		$entityManager = $this->getDoctrine()->getManager();
+		$repositoryRequest = $this->getDoctrine()->getRepository(Request::class);
+		
+		// buscamos la solicitud en base de datos con la id recibida
+		$requestModify = $repositoryRequest->find($_POST['requestId']);
+
+		//Comprobamos si hemos rechazado o aceptado la solicitud
+		if(isset($_POST['accept'])){
+			$requestModify->setAccept(true);
+		} else if (isset($_POST['deny'])){
+			$requestModify->setAccept(false);
+		}
+
+		// Lo modificamos en base de datos
+		$entityManager->merge($requestModify);
+		$entityManager->flush();
+
+		return $this->redirectToRoute("areaprivada");
+
+	}
+
+	
+	/**
+	 * @Route("/finishRequest", name="finishRequest")
+	 * METODO QUE ACEPTA LA SOLICITUD DE UN SERVICIO
+	 */
+	public function finishRequest(){
+		$entityManager = $this->getDoctrine()->getManager();
+		$repositoryRequest = $this->getDoctrine()->getRepository(Request::class);
+		
+		// buscamos la solicitud en base de datos con la id recibida
+		$requestModify = $repositoryRequest->find($_POST['requestId']);
+
+		//Marcamos el servicio como finalizado
+		$requestModify->setFinish(true);
+
+		// Lo modificamos en base de datos
+		$entityManager->merge($requestModify);
+		$entityManager->flush();
+
+		return $this->redirectToRoute("areaprivada");
+
+	}
+
 }

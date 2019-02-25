@@ -79,11 +79,21 @@ class Users implements UserInterface
         $this->messages = new ArrayCollection();
         $this->services = new ArrayCollection();
         $this->requests = new ArrayCollection();
-        $this->email = $data['email'];
-        $this->password = $data['password'];
-        $this->name = $data['name'];
-        $this->lastName = $data['lastName'];
-        $this->city = $data['city'];
+        if(isset($data['email'])){
+            $this->email = $data['email'];
+        }
+        if(isset($data['password'])){
+            $this->password = $data['password'];
+        }
+        if(isset($data['name'])){
+            $this->name = $data['name'];
+        }
+        if(isset($data['lastName'])){
+            $this->lastName = $data['lastName'];
+        }
+        if(isset($data['city'])){
+            $this->city = $data['city'];
+        }
         $this->time = 0;        
     }
 
