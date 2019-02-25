@@ -67,16 +67,18 @@ class Users implements UserInterface
      */
     private $services;
 
-    public function __construct()
-    {
-        $this->services = new ArrayCollection();
-    }
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Request", mappedBy="userRequest")
+     */
+    private $requests;
 
     /**
      * Contrsctor del objeto
      */
-    public function __contsruct($data){
+    public function __construct($data){
         $this->messages = new ArrayCollection();
+        $this->services = new ArrayCollection();
+        $this->requests = new ArrayCollection();
         $this->email = $data['email'];
         $this->password = $data['password'];
         $this->name = $data['name'];
@@ -268,6 +270,37 @@ class Users implements UserInterface
             // set the owning side to null (unless already changed)
             if ($service->getUserOffer() === $this) {
                 $service->setUserOffer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Request[]
+     */
+    public function getRequests(): Collection
+    {
+        return $this->requests;
+    }
+
+    public function addRequest(Request $request): self
+    {
+        if (!$this->requests->contains($request)) {
+            $this->requests[] = $request;
+            $request->setUserRequest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRequest(Request $request): self
+    {
+        if ($this->requests->contains($request)) {
+            $this->requests->removeElement($request);
+            // set the owning side to null (unless already changed)
+            if ($request->getUserRequest() === $this) {
+                $request->setUserRequest(null);
             }
         }
 

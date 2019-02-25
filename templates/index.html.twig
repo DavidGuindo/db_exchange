@@ -6,7 +6,7 @@
 
         <img src="LOGo">
          <!--ENLACE AL AREA PRIVADA-->
-         <a href="./AreaPrivada"><img src="../assets/img/user.png" width="50px" height="50px" class="float-right"></a>
+         <a href="./areaprivada"><img src="../assets/img/user.png" width="50px" height="50px" class="float-right"></a>
          
          <h1>TITULO WEB</h1>
 
@@ -87,8 +87,9 @@
                   <img class="card-img-top" src="IMAGEN SERVICIO" alt="Card image cap">
                   <div class="card-body">
                       <h5 class="card-title">{{service.getName}}</h5>
-                      <h5 class="card-title">{{service.getUserOffer.getName }}</h5>
-                      <p class="card-text">Tiempo</p>
+                      <h5 class="card-title">{{service.getUserOffer.getName}}</h5>
+                      <h5 class="card-title">{{service.getCity.getName}}</h5>
+                      <p class="card-text">{{service.getTime}}m</p>
                       <!--ESTE FORMULARIO ENVIA UN MENSAJE DE SOLICITUD PREDEFINIDO-->
                       <form action="./sendRequest" method="POST">
                         <button class="btn btn-primary" type="submit">Solicitar servicio</button>
