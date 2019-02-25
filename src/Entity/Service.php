@@ -32,6 +32,11 @@ class Service
     private $img;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="services")
+     */
+    private $city;
+
+    /**
      * Contructor de la clase
      */
     public function __construct($data){
@@ -78,6 +83,18 @@ class Service
     public function setImg(string $img): self
     {
         $this->img = $img;
+
+        return $this;
+    }
+
+    public function getCity(): ?city
+    {
+        return $this->city;
+    }
+
+    public function setCity(?city $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }

@@ -67,12 +67,12 @@ class Users implements UserInterface
      */
     public function __contsruct($data){
         $this->messages = new ArrayCollection();
-        $this->email = $data['email'];
-        $this->password = $data['password'];
-        $this->name = $data['name'];
-        $this->lastName = $data['lastName'];
-        $this->city = $data['city'];
-        $this->time = 0;        
+        // $this->email = $data['email'];
+        // $this->password = $data['password'];
+        // $this->name = $data['name'];
+        // $this->lastName = $data['lastName'];
+        // $this->city = $data['city'];
+        // $this->time = 0;        
     }
 
 

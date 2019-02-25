@@ -79,14 +79,29 @@
       </div>
 
       <section>
-
+      <br><br>
         <!--AQUI APARECERAN UNA LISTA DE SERVICIOS CON UNA BARRA PARA SELECCIONAR CATEGORIA ARRIBA Y PODER FILTRAR-->
-        <select>
-            <option value="0">SELECCIONE UNA CATEGORÍA</option>
+
+
+        <form action="/buscador" method="POST">
+        <select name="ciudadElegida">
+            <option value="0">SELECCIONE UNA CIUDAD</option>
+            {% for city in all_cities %}
+            <option value="{{city.name}}">{{city.name}}</option>
+            {% endfor %}
         </select>
+        <select name="categoriaElegida">
+            <option value="0">SELECCIONE UNA CATEGORIA</option>
+            {% for category in all_categories %}
+            <option value="{{category.name}}">{{category.name}}</option>
+            {% endfor %}
+        </select>
+
         <input type="submit" value="Filtrar">
 
-        <table>
+        </form>
+
+        <table style="width:100%">
 
         
 
@@ -102,7 +117,7 @@
 
             {% endif %} 
 
-            <td style="background-image:{{event.image}}; width:30%; border:1px solid black; margin:5px; padding:5px; text-align:center">
+            <td style="backgroud-image:{image}}width:30%; border:1px solid black; margin:5px; padding:5px; text-align:center">
               <div class="card" style="width: 18rem;">
                   <img class="card-img-top" src="IMAGEN SERVICIO" alt="Card image cap">
                   <div class="card-body">

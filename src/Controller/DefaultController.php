@@ -30,8 +30,15 @@ class DefaultController extends Controller {
 		$repositoryService = $this->getDoctrine()->getRepository(Service::class);
 		// Descargamos todos los servicios
 		$all_services = $repositoryService->findAll();
+
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+		$ciudades = $repositoryCity->findAll();
+
+		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+		$categorias = $repositoryCategory->findAll();
 		
-		return $this->render('index.html.twig', ['all_services'=>$all_services]);		
+		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades,
+		 'all_categories'=>$categorias]);		
 	}
 
 	/**
@@ -145,4 +152,42 @@ class DefaultController extends Controller {
 		return $this->redirectToRoute("AreaPrivada");
 		
 	}
+
+
+	/**
+	 * @Route("/buscador", name="buscar")
+	 * CREAR MENSAJE
+	 */
+	public function filtro(){
+
+		var_dump($_POST);
+		die;
+
+		$repositoryCity = $this->getDoctrine->getRepository(City::class);
+
+		$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
+
+		$todosServicios = $ciudad->getServices();
+
+		foreach ($todosServicios as $key => $value) {
+			if($value->getCategory == $_POST['categoriaElegida']){
+				$servicios[] = $todosServicios[$key];
+			}
+		}
+
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+		$ciudades = $repositoryCity->findAll();
+
+		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+		$categorias = $repositoryCategory->findAll();
+		
+		return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_cities'=>$ciudades,
+		 'all_categories'=>$categorias]);		
+	}
+
+	
+
+
+
+
 }
