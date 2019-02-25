@@ -30,7 +30,7 @@ class DefaultController extends Controller {
 	public function index(){
 		// Con esto descargamos el usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
- 		$user = $token->getUser();
+		$user = $token->getUser();
 		
 		//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
 		$repositoryService = $this->getDoctrine()->getRepository(Service::class);
@@ -71,7 +71,7 @@ class DefaultController extends Controller {
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 		$repositoryMessage = $this->getDoctrine()->getRepository(Message::class);
-	
+
 		// Usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser();
@@ -280,7 +280,16 @@ class DefaultController extends Controller {
 	 */
 	public function darDeBaja()
 	{
-		
+
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser();
+
+		$entityManager = $this->getDoctrine()->getManager();
+		$entityManager->remove($user);
+
+		return $this->redirectToRoute("/");
+
+
 	}
 
 	/**
