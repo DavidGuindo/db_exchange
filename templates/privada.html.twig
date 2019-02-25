@@ -53,13 +53,13 @@
           
           Categoría: <select name="category">
             {% for category in all_category %}
-              <option value="{{category.getId}}">{{category.getName}}</option>
+              <option value="{{category.id}}">{{category.name}}</option>
             {% endfor %}
           </select>
 
           Ciudad: <select name="city">
             {% for city in all_city %}
-              <option value="{{city.getId}}">{{city.getName}}</option>
+              <option value="{{city.id}}">{{city.name}}</option>
             {% endfor %}
           </select>
           
@@ -75,7 +75,7 @@
           
           Destinatario: <select name="userReciving">
             {% for user in all_users %}
-              <option value="{{user.getId}}">{{user.getEmail}}</option>
+              <option value="{{user.id}}">{{user.email}}</option>
             {% endfor %}
           </select>
           
@@ -89,10 +89,10 @@
         <h1>MENSAJES RECIBIDOS</h1>
         {% for messageReciving in allMessageRecivingUser %}
           <div class="message">
-            <p>Fecha: {{messageReciving.getDate}}</p>
-            <p>Usuario que envia: {{messageReciving.getUserSend.getEmail}}</p>
-            <p>Usuario que recibe: {{messageReciving.getUserReciving.getEmail}}</p>
-            <p>Mensaje: {{messageReciving.getBodyMessage}}</p>
+            <p>Fecha: {{messageReciving.date}}</p>
+            <p>Usuario que envia: {{messageReciving.userSend.email}}</p>
+            <p>Usuario que recibe: {{messageReciving.userReciving.email}}</p>
+            <p>Mensaje: {{messageReciving.bodyMessage}}</p>
 
             <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
             {% if messageReciving.getCheckRead == 0 %}
@@ -110,8 +110,8 @@
         <h1>SOLICITUDES RECIBIDAS</h1>
         {% for request in all_request %}
           <div class="request">
-            <p>El usuario {{request.getUserRequest.getEmail}} a solicitado tu servicio de {{request.getService.getName}}</p>
-            <p>Fecha: {{request.getDate}}</p>
+            <p>El usuario {{request.userRequest.email}} a solicitado tu servicio de {{request.getService.name}}</p>
+            <p>Fecha: {{request.date}}</p>
 
             {% if request.accept == 0 %}
               <!--FORMULARIO PARA ACEPTAR O RECHAZAR LA OFERTA-->

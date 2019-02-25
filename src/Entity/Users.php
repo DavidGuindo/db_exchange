@@ -73,14 +73,11 @@ class Users implements UserInterface
      */
     private $services;
 
-<<<<<<< HEAD
 
-=======
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Request", mappedBy="userRequest")
      */
     private $requests;
->>>>>>> 17f41adac1ae5e570da1f949ff435f290e77fc97
 
     /**
      * Contrsctor del objeto
@@ -88,10 +85,7 @@ class Users implements UserInterface
     public function __construct($data){
         $this->messages = new ArrayCollection();
         $this->services = new ArrayCollection();
-<<<<<<< HEAD
-=======
         $this->requests = new ArrayCollection();
->>>>>>> 17f41adac1ae5e570da1f949ff435f290e77fc97
         $this->email = $data['email'];
         $this->password = $data['password'];
         $this->name = $data['name'];

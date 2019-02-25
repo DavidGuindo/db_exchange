@@ -201,20 +201,55 @@ class DefaultController extends Controller {
 	 */
 	public function filtro(){
 
-		var_dump($_POST);
-		die;
+		if($_POST['ciudadElegida'] != "0" && $_POST['categoriaElegida'] != "0"){
 
-		$repositoryCity = $this->getDoctrine->getRepository(City::class);
+			$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 
-		$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
+			$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
 
-		$todosServicios = $ciudad->getServices();
+			$todosServicios = $ciudad->getServices();
 
-		foreach ($todosServicios as $key => $value) {
-			if($value->getCategory == $_POST['categoriaElegida']){
-				$servicios[] = $todosServicios[$key];
+
+
+			foreach ($todosServicios as $key => $value) {
+					
+				if($value->getCategory()->getName() == $_POST['categoriaElegida']){
+					$servicios[] = $todosServicios[$key];
+					
+				}
 			}
+
 		}
+
+		if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] != "0"){
+
+			$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+
+			$categoria = $repositoryCategory->findOneByName($_POST['categoriaElegida']);
+
+			$servicios = $categoria->getServices();
+
+		}
+
+		if($_POST['ciudadElegida'] != "0" && $_POST['categoriaElegida'] == "0"){
+
+			$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+
+			$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
+
+			$servicios = $ciudad->getServices();
+
+		}
+
+		if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] == "0"){
+			//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
+			$repositoryService = $this->getDoctrine()->getRepository(Service::class);
+		// Descargamos todos los servicios
+			$servicios = $repositoryService->findAll();
+		}
+		
+
+		
 
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 		$ciudades = $repositoryCity->findAll();
