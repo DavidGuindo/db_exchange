@@ -32,6 +32,11 @@ class Service
     private $img;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\users", inversedBy="services")
+     */
+    private $userOffer;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="services")
      */
     private $city;
@@ -43,6 +48,8 @@ class Service
         $this->name=$data['name'];
         $this->img=$data['img'];
         $this->category=$data['category'];
+        $this->city=$data['city'];
+        $this->userOffer=$data['userOffer'];
     }
 
 
@@ -86,6 +93,20 @@ class Service
 
         return $this;
     }
+
+
+    public function getUserOffer(): ?users
+    {
+        return $this->userOffer;
+    }
+
+    public function setUserOffer(?users $userOffer): self
+    {
+        $this->userOffer = $userOffer;
+
+        return $this;
+    }
+
 
     public function getCity(): ?city
     {

@@ -37,6 +37,11 @@ class Message
     private $bodyMessage;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $checkRead;
+
+    /**
      * Contructor de la clase
      */
     public function __construct($data){
@@ -44,6 +49,7 @@ class Message
         $this->userReciving = $data['userReciving'];
         $this->date = date("Y-m-d");
         $this->bodyMessage = $data['bodyMessage'];
+        $this->checkRead = false;
     }
 
     public function getId(): ?int
@@ -95,6 +101,18 @@ class Message
     public function setBodyMessage(string $bodyMessage): self
     {
         $this->bodyMessage = $bodyMessage;
+
+        return $this;
+    }
+
+    public function getCheckRead(): ?bool
+    {
+        return $this->checkRead;
+    }
+
+    public function setCheckRead(bool $checkRead): self
+    {
+        $this->checkRead = $checkRead;
 
         return $this;
     }

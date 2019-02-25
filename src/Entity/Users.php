@@ -63,21 +63,30 @@ class Users implements UserInterface
     private $messages;
 
     /**
+
      * @ORM\Column(type="string", length=255)
      */
     private $img;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Service", mappedBy="userOffer")
+     */
+    private $services;
+
+
 
     /**
      * Contrsctor del objeto
      */
     public function __construct($data){
         $this->messages = new ArrayCollection();
-        // $this->email = $data['email'];
-        // $this->password = $data['password'];
-        // $this->name = $data['name'];
-        // $this->lastName = $data['lastName'];
-        // $this->city = $data['city'];
-        // $this->time = 0;        
+        $this->services = new ArrayCollection();
+        $this->email = $data['email'];
+        $this->password = $data['password'];
+        $this->name = $data['name'];
+        $this->lastName = $data['lastName'];
+        $this->city = $data['city'];
+        $this->time = 0;        
     }
 
 
@@ -238,6 +247,7 @@ class Users implements UserInterface
         return $this;
     }
 
+
     public function comprobarSaldo($cantidad){  //en cantidad le pasaremos lo que se le va a cobrar
         if($this->time - $cantidad < 300){
             return false;
@@ -255,6 +265,36 @@ class Users implements UserInterface
     public function setImg(string $img): self
     {
         $this->img = $img;
+    }
+
+    /**
+     * @return Collection|Service[]
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(Service $service): self
+    {
+        if (!$this->services->contains($service)) {
+            $this->services[] = $service;
+            $service->setUserOffer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(Service $service): self
+    {
+        if ($this->services->contains($service)) {
+            $this->services->removeElement($service);
+            // set the owning side to null (unless already changed)
+            if ($service->getUserOffer() === $this) {
+                $service->setUserOffer(null);
+            }
+        }
+
 
         return $this;
     }
