@@ -38,6 +38,7 @@ class Service
      */
     private $userOffer;
 
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="services")
      */
@@ -107,9 +108,7 @@ class Service
 
         return $this;
     }
-
-
-    public function getUserOffer(): ?users
+   public function getUserOffer(): ?users
     {
         return $this->userOffer;
     }
@@ -117,10 +116,7 @@ class Service
     public function setUserOffer(?users $userOffer): self
     {
         $this->userOffer = $userOffer;
-
-        return $this;
     }
-
 
     public function getCity(): ?city
     {
@@ -130,7 +126,6 @@ class Service
     public function setCity(?city $city): self
     {
         $this->city = $city;
-
         return $this;
     }
 

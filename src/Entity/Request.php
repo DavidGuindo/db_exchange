@@ -17,7 +17,7 @@ class Request
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\users", inversedBy="requests")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Users", inversedBy="requests")
      */
     private $userRequest;
 
@@ -28,11 +28,15 @@ class Request
 
     /**
      * @ORM\Column(type="boolean")
+     *
      */
     private $finish;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="integer")
+     *  0.- Rechazado
+     *  1.- Aceptado
+     *  2.- Pendiente
      */
     private $accept;
 
@@ -48,7 +52,7 @@ class Request
         $this->userRequest = $data['userRequest'];
         $this->service = $data['service'];
         $this->finish = false;
-        $this->accept = false;
+        $this->accept = '2';
         $this->date = date("Y-m-d");
     }
 
@@ -93,12 +97,12 @@ class Request
         return $this;
     }
 
-    public function getAccept(): ?bool
+    public function getAccept(): ?int
     {
         return $this->accept;
     }
 
-    public function setAccept(bool $accept): self
+    public function setAccept(int $accept): self
     {
         $this->accept = $accept;
 

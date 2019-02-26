@@ -1,179 +1,118 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
-
-    <header>
-      <img src="LOGo">
-      <!--ENLACE AL AREA PRIVADA-->
-      <a href="#" style="float:right"><img src="../assets/img/user.png" width="50px" height="50px"></a>
-      
-      <h1>TITULO WEB</h1>
-
-      
-         <br>
-         <button onclick="window.location.href='/editarPerfil'">Editar perfil</button>
-         <br>
-
-      <!--MENU CON BOOSTRAP-->
-      <div class="container" id="nav">
-        <nav class="nav nav-pills nav-justified mt-2">
-          <a class="nav-link nav-item" href="#">Opción 1</a>
-          <a class="nav-link nav-item active" href="#">Opción 2</a>
-          <a class="nav-link nav-item" href="#">Opción 3</a>
-          <a class="nav-link nav-item" href="#">Opción 4</a>
-          <a class="nav-link nav-item disabled" href="#">Opción 5</a>
-
-        </nav>
-      </div>
-    </header>
-
     <main>
-
-      <fieldset>
-        <legend>CREAR CIUDAD</legend>
-        <form action="./createCity" method="POST">
-          Nombre: <input type="text" name="name">
-          <input type="submit" value="Crear ciudad">
-        </form>
-      </fieldset>
-
-      <fieldset>
-        <legend>CREAR CATEGORÍA</legend>
-
-        <form action="/createCategory" method="POST" enctype="multipart/form-data">
-
-          Nombre: <input type="text" name="name">
-          Imagen: <input type="file" name="img">
-          <input type="submit" value="Crear categoria">
-        </form>
-      </fieldset>
-      
-      <fieldset>
-        <legend>CREAR SERVICIO</legend>
-
-        <form enctype="multipart/form-data" action="./createService" method="POST">
-
-          Nombre: <input type="text" name="name">
-          Tiempo: <input type="number" name="time">
-          
-          Categoría: <select name="category">
-            {% for category in all_category %}
-              <option value="{{category.id}}">{{category.name}}</option>
-            {% endfor %}
-          </select>
-
-          Ciudad: <select name="city">
-            {% for city in all_city %}
-              <option value="{{city.id}}">{{city.name}}</option>
-            {% endfor %}
-          </select>
-          
-          Imagen: <input type="file" name="img">
-          <input type="submit" value="Crear servicio">
-        </form>
-      </fieldset>
-
-
-      <fieldset>
-        <legend>ENVIAR MENSAJE</legend>
-        <form action="./createMessage" method="POST">
-          
-          Destinatario: <select name="userReciving">
-            {% for user in all_users %}
-              <option value="{{user.id}}">{{user.email}}</option>
-            {% endfor %}
-          </select>
-          
-          Cuerpo del mensaje: <textarea cols="30" rows="5" name="bodyMessage"></textarea>
-
-          <input type="submit" value="Enviar mensaje">
-        </form>
-      </fieldset>
-
-      <div id="containerMessage">
-        <h1>MENSAJES RECIBIDOS</h1>
-        {% for messageReciving in allMessageRecivingUser %}
-          <div class="message">
-            <p>Fecha: {{messageReciving.date}}</p>
-            <p>Usuario que envia: {{messageReciving.userSend.email}}</p>
-            <p>Usuario que recibe: {{messageReciving.userReciving.email}}</p>
-            <p>Mensaje: {{messageReciving.bodyMessage}}</p>
-
-            <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
-            {% if messageReciving.getCheckRead == 0 %}
-              <p>NO LEIDO</p>
-            {% else %}
-              <p>LEIDO</p>
-            {% endif %}
-          </div>
-        {% endfor %}
-      </div>
-
-
-
-      <div id="containerRequest">
-        <h1>SOLICITUDES RECIBIDAS</h1>
-        {% for request in all_request %}
-          <div class="request">
-            <p>El usuario {{request.userRequest.email}} a solicitado tu servicio de {{request.getService.name}}</p>
-            <p>Fecha: {{request.date}}</p>
-
-            {% if request.accept == 0 %}
-              <!--FORMULARIO PARA ACEPTAR O RECHAZAR LA OFERTA-->
-              <form>
-                <input type="submit" name="accept" value="Aceptar">
-                <input type="submit" name="deny" value="Rechazar">
-              </form>
-
-            {% else %}
-            <!--FORMULARIO MARCAR COMO FINALIZADO EL SERVICIO-->
-              <form>
-                <input type="submit" name="finish" value="Finalizado">
-              </form>
-            {% endif %}
-          </div>
-        {% endfor %}
-      </div>
-    </main>
-
-
-    <footer>
-        <form action="" method="POST">
-
-            Email: <input type="text" name="email">
-            Nombre: <input type="text" name="name">
-            Teléfono: <input type="text" name="telephone">
-            Comentario: <textarea cols="30" rows="5" name="text"></textarea>
-            <input type="submit" name="send" value="Contactar">
-        </form>
-    </footer>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{% endblock %}
+        <fieldset>
+            <legend>CREAR CIUDAD</legend>
+            <form action="./createCity" method="POST">
+                Nombre:
+                <input name="name" type="text">
+                    <input type="submit" value="Crear ciudad"></form>
+                </fieldset>
+                <fieldset>
+                    <legend>CREAR CATEGORÍA</legend>
+                    <form action="./createCategory" enctype="multipart/form-data" method="POST">
+                        Nombre:
+                        <input name="name" type="text">
+                            Imagen:
+                            <input name="img" type="file">
+                                <input type="submit" value="Crear categoria"></form>
+                            </fieldset>
+                            <fieldset>
+                                <legend>CREAR SERVICIO</legend>
+                                <form action="./createService" enctype="multipart/form-data" method="POST">
+                                    <form action="./createService" enctype="multipart/form-data" method="POST">
+                                        Nombre:
+                                        <input name="name" type="text">
+                                            Tiempo:
+                                            <input name="time" type="number">
+                                                Categoría:
+                                                <select name="category">
+                                                    {% for category in all_category %}
+                                                        <option value="{{category.id}}">
+                                                            {{category.name}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                Ciudad:
+                                                <select name="city">
+                                                    {% for city in all_city %}
+                                                        <option value="{{city.id}}">
+                                                            {{city.name}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                Imagen:
+                                                <input name="img" type="file">
+                                                    <input type="submit" value="Crear servicio"></form>
+                                                </fieldset>
+                                                <fieldset>
+                                                    <legend>ENVIAR MENSAJE</legend>
+                                                    <form action="./createMessage" method="POST">
+                                                        Destinatario:
+                                                        <select name="userReciving">
+                                                            {% for user in all_users %}
+                                                                <option value="{{user.id}}">
+                                                                    {{user.email}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        Cuerpo del mensaje:
+                                                        <textarea cols="30" name="bodyMessage" rows="5"></textarea>
+                                                        <input type="submit" value="Enviar mensaje"></form>
+                                                    </fieldset>
+                                                    <div id="containerMessage">
+                                                        <h1>MENSAJES RECIBIDOS</h1>
+                                                        {% for message in allMessage %}
+                                                            <div class="message">
+                                                                <p>Fecha:
+                                                                    {{message.date}}</p>
+                                                                <p>Usuario que envia:
+                                                                    {{message.userSend.email}}</p>
+                                                                <p>Usuario que recibe:
+                                                                    {{message.userReciving.email}}</p>
+                                                                <p>Mensaje:
+                                                                    {{message.bodyMessage}}</p>
+                                                                <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
+                                                                {% if message.getCheckRead == 0 %}
+                                                                    <p>NO LEIDO</p>
+                                                                    {% else %}
+                                                                    <p>LEIDO</p>
+                                                                {% endif %}
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div id="containerRequest">
+                                                        <h2>SOLICITUDES RECIBIDAS</h2>
+                                                        {% for request in all_request %}
+                                                            <div
+                                                                class="request">
+                                                                <!--SOLICITUDES PENDIENTES-->
+                                                                {% if request.accept == 2 %}
+                                                                    <p>El usuario
+                                                                        {{request.getUserRequest.getEmail}}
+                                                                        a solicitado tu servicio de
+                                                                        {{request.getService.getName}}</p>
+                                                                    <p>Fecha:
+                                                                        {{request.getDate}}</p>
+                                                                    <!--FORMULARIO PARA ACEPTAR O RECHAZAR LA OFERTA-->
+                                                                    <form action="./acceptRequest" method="POST">
+                                                                        <input name="accept" type="submit" value="Aceptar">
+                                                                            <input name="deny" type="submit" value="Rechazar">
+                                                                                <input type="hidden" name="requestId" value="{{request.getId}}"></form>
+                                                                                {% elseif  request.accept == 1 %}
+                                                                                {% if request.finish == 0 %}
+                                                                                    <p>El usuario
+                                                                                        {{request.getUserRequest.getEmail}}
+                                                                                        a solicitado tu servicio de
+                                                                                        {{request.getService.getName}}</p>
+                                                                                    <p>Fecha:
+                                                                                        {{request.getDate}}</p>
+                                                                                    <!--FORMULARIO MARCAR COMO FINALIZADO EL SERVICIO-->
+                                                                                    <form action="./finishRequest" method="POST">
+                                                                                        <input type="hidden" name="requestId" value="{{request.getId}}">
+                                                                                            <input name="finish" type="submit" value="Finalizado"></form>
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </main>
+                                                                {% endblock %}
+                                                            

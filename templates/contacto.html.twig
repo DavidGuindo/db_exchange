@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contacto!{% endblock %}
+
+{% block body %}
+<main class="container-fluid">
+          <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 p-3 mx-auto border rounded border-dark bg-login container-login">
+              <div class="col-3 mx-auto mb-4">
+                 <img src="img/Logoex.PNG" class="my-2 mx-auto"/>
+              </div>
+              <div class="col-12 mx-auto pb-5">
+                <form action="/contactoEnviado" method="Post">
+                  <div class="row">
+                      <div class="col-5 mx-auto">
+                        <label for="inputEmail" class="font-weight-bold">Email:</label><br>
+                        <input type="email" name="email" class="form-control" id="inputEmail" placeholder="Email" required/>
+                      </div>
+                      <div class="col-5 mx-auto mb-5">
+                        <label class="font-weight-bold" for="name">nombre:</label><br>
+                        <input type="text" name="name" class="form-control" id="name" placeholder="name" required>
+                      </div>
+                  </div>
+                  <div class="row">
+                        <div class="col-11 mx-auto mb-5">
+                        <label class="font-weight-bold" for="comment">Mensaje:</label><br>
+                        <textarea name="mensaje" class="form-control" rows="5" id="comment" required></textarea>
+                      </div>
+                  </div>
+                      
+                  <button class="btn btn-lg btn-primary active ml-4" type="submit" name="contactoEnv">
+                    Enviar mensaje
+                  </button>
+                </form>
+              </div>
+          </div>
+        </main>
+  {% endblock %}

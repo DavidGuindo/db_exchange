@@ -50,11 +50,6 @@ class Users implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $city;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     private $time;
 
     /**
@@ -67,11 +62,15 @@ class Users implements UserInterface
      */
     private $services;
 
-
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Request", mappedBy="userRequest")
      */
     private $requests;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="users")
+     */
+    private $city;
 
     /**
      * Contrsctor del objeto
@@ -80,20 +79,23 @@ class Users implements UserInterface
         $this->messages = new ArrayCollection();
         $this->services = new ArrayCollection();
         $this->requests = new ArrayCollection();
-        if(isset($this->email))
+        if(isset($data['email'])){
             $this->email = $data['email'];
-        if(isset($this->password))
+        }
+        if(isset($data['password'])){
             $this->password = $data['password'];
-        if(isset($this->name))
+        }
+        if(isset($data['name'])){
             $this->name = $data['name'];
-        if(isset($this->lastName))
+        }
+        if(isset($data['lastName'])){
             $this->lastName = $data['lastName'];
-        if(isset($this->city))
+        }
+       /* if(isset($data['city'])){
             $this->city = $data['city'];
-        $this->time = 0;   
-              
+        }*/
+        $this->time = 0;        
     }
-
 
     public function getId(): ?int
     {
@@ -197,18 +199,6 @@ class Users implements UserInterface
         return $this;
     }
 
-    public function getCity(): ?string
-    {
-        return $this->city;
-    }
-
-    public function setCity(string $city): self
-    {
-        $this->city = $city;
-
-        return $this;
-    }
-
     public function getTime(): ?string
     {
         return $this->time;
@@ -290,9 +280,6 @@ class Users implements UserInterface
                 $service->setUserOffer(null);
             }
         }
-
-
-        return $this;
     }
 
     /**
@@ -322,6 +309,18 @@ class Users implements UserInterface
                 $request->setUserRequest(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCity(): ?city
+    {
+        return $this->city;
+    }
+
+    public function setCity(?city $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }
