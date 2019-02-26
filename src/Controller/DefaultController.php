@@ -66,7 +66,7 @@ class DefaultController extends Controller {
 		$categorias = $repositoryCategory->findAll();
 		
 		return $this->render('index.html.twig', ['all_services'=>$servicios,
-			'all_categories'=>$categorias]);
+			'all_categories'=>$categorias, 'user' => $user]);
 
 		}
 		
@@ -88,6 +88,9 @@ class DefaultController extends Controller {
 	 * @Route("/areaprivada", name="areaprivada")
 	 */
 	public function areaprivada(){
+
+		if(! $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY')){
+		}
 		//Cogemos los repositorios
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
@@ -233,8 +236,6 @@ class DefaultController extends Controller {
 
 			$todosServicios = $ciudad->getServices();
 
-
-
 			foreach ($todosServicios as $key => $value) {
 
 				if($value->getCategory()->getName() == $_POST['categoriaElegida']){
@@ -271,9 +272,6 @@ class DefaultController extends Controller {
 		// Descargamos todos los servicios
 			$servicios = $repositoryService->findAll();
 		}
-		
-
-		
 
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 		$ciudades = $repositoryCity->findAll();
