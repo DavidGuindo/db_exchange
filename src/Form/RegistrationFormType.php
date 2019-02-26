@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Users;
+use App\Entity\City;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,7 +21,7 @@ class RegistrationFormType extends AbstractType
             ->add('email')
             ->add('name')
             ->add('lastName')
-            ->add('city')
+           // ->add('city')
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
@@ -36,6 +39,12 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
         ;
+
+        // Añadimos
+        $builder->add('city', EntityType::class, [
+            'class' => City::class,
+            'choice_label' => 'getName',
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

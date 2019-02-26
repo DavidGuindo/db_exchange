@@ -63,10 +63,6 @@ class DefaultController extends Controller {
 
 			$servicios = $ciudad->getServices();
 
-			// SI NO HAY SERVICIOS
-			if (empty($servicios)){
-				return $this->render('index.html.twig', ['all_categories'=>$categorias, 'user' => $user]);
-			}
 
 			return $this->render('index.html.twig', ['all_services'=>$servicios,'all_categories'=>$categorias, 'user' => $user]);
 
@@ -92,6 +88,7 @@ class DefaultController extends Controller {
 		//Cogemos los repositorios
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
+		$repositoryRequest = $this->getDoctrine()->getRepository(Request::class);
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 		// Usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
@@ -100,13 +97,7 @@ class DefaultController extends Controller {
 		// solicitudes del usuario
 		$allRequest = $user->getRequests();
 		
-		foreach($allRequest as $request ){
-			echo $request->getService()->getName();
-			echo $request->getAccept()."<br>";
-
-		}
-		
-		// solicitudes del usuario
+		// Mensajes del usuario
 		$allMessage = $user->getMessages();
 
 		// Descargamos todos las categorias, usuario, solicitudes y ciudades
@@ -415,8 +406,6 @@ class DefaultController extends Controller {
 			}
 		}
 	}
-
-	
 
 	/**
 	 * @Route("/editarPerfil", name="editar")

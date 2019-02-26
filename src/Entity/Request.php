@@ -97,12 +97,12 @@ class Request
         return $this;
     }
 
-    public function getAccept(): ?bool
+    public function getAccept(): ?int
     {
         return $this->accept;
     }
 
-    public function setAccept(bool $accept): self
+    public function setAccept(int $accept): self
     {
         $this->accept = $accept;
 

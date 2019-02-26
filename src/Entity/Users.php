@@ -50,11 +50,6 @@ class Users implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $city;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     private $time;
 
     /**
@@ -71,6 +66,11 @@ class Users implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Request", mappedBy="userRequest")
      */
     private $requests;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="users")
+     */
+    private $city;
 
     /**
      * Contrsctor del objeto
@@ -91,9 +91,9 @@ class Users implements UserInterface
         if(isset($data['lastName'])){
             $this->lastName = $data['lastName'];
         }
-        if(isset($data['city'])){
+       /* if(isset($data['city'])){
             $this->city = $data['city'];
-        }
+        }*/
         $this->time = 0;        
     }
 
@@ -195,18 +195,6 @@ class Users implements UserInterface
     public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    public function getCity(): ?string
-    {
-        return $this->city;
-    }
-
-    public function setCity(string $city): self
-    {
-        $this->city = $city;
 
         return $this;
     }
@@ -321,6 +309,18 @@ class Users implements UserInterface
                 $request->setUserRequest(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCity(): ?city
+    {
+        return $this->city;
+    }
+
+    public function setCity(?city $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }

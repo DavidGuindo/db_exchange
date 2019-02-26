@@ -81,9 +81,8 @@
                                                     <div id="containerRequest">
                                                         <h2>SOLICITUDES RECIBIDAS</h2>
                                                         {% for request in all_request %}
-                                                            <div class="request">
-                                                                <h5>
-                                                                    {{request.accept}}</h5>
+                                                            <div
+                                                                class="request">
                                                                 <!--SOLICITUDES PENDIENTES-->
                                                                 {% if request.accept == 2 %}
                                                                     <p>El usuario
