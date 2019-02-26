@@ -61,13 +61,7 @@ class Users implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Message", mappedBy="userSend")
      */
     private $messages;
-
-    /**
-
-     * @ORM\Column(type="string", length=255)
-     */
-    private $img;
-
+    
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Service", mappedBy="userOffer")
      */
@@ -86,12 +80,18 @@ class Users implements UserInterface
         $this->messages = new ArrayCollection();
         $this->services = new ArrayCollection();
         $this->requests = new ArrayCollection();
-        $this->email = $data['email'];
-        $this->password = $data['password'];
-        $this->name = $data['name'];
-        $this->lastName = $data['lastName'];
-        $this->city = $data['city'];
-        $this->time = 0;        
+        if(isset($this->email))
+            $this->email = $data['email'];
+        if(isset($this->password))
+            $this->password = $data['password'];
+        if(isset($this->name))
+            $this->name = $data['name'];
+        if(isset($this->lastName))
+            $this->lastName = $data['lastName'];
+        if(isset($this->city))
+            $this->city = $data['city'];
+        $this->time = 0;   
+              
     }
 
 
@@ -259,18 +259,9 @@ class Users implements UserInterface
         }else{
            return true;
        }
-       
+
    }
 
-    public function getImg(): ?string
-    {
-        return $this->img;
-    }
-
-    public function setImg(string $img): self
-    {
-        $this->img = $img;
-    }
 
     /**
      * @return Collection|Service[]

@@ -382,7 +382,7 @@ class DefaultController extends Controller {
 		$entityManager = $this->getDoctrine()->getManager();
 		$entityManager->remove($user);
 
-		return $this->redirectToRoute("index");
+		return $this->redirectToRoute("app_logout");
 
 
 	}
