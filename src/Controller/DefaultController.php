@@ -2,7 +2,6 @@
 namespace App\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\Date;
@@ -10,11 +9,11 @@ use App\Entity\Users;
 use App\Entity\Message;
 use App\Entity\Service;
 use App\Entity\Category;
+use App\Entity\Request;
 use App\Entity\City;
 
 // $token = $this->get('security.token_storage')->getToken();
 // $user = $token->getUser(); OBTENER USUARIO LOGEADO.
-
 
 /**
  * @Route("/")
@@ -51,27 +50,36 @@ class DefaultController extends Controller {
 	}
 
 	/**
-	 * @Route("/AreaPrivada", name="AreaPrivada")
+	 * @Route("/areaprivada", name="areaprivada")
 	 */
-	public function areaPrivada(){
+	public function areaprivada(){
 		//Cogemos los repositorios
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
-		$repositoryMessage = $this->getDoctrine()->getRepository(Message::class);
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 	
 		// Usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser();
-		
 
-		// Descargamos todos las categorias y usuarios
+		// solicitudes del usuario
+		$allRequest = $user->getRequests();
+		
+		foreach($allRequest as $request ){
+			echo $request->getService()->getName();
+			echo $request->getAccept()."<br>";
+
+		}
+		
+		// solicitudes del usuario
+		$allMessage = $user->getMessages();
+
+		// Descargamos todos las categorias, usuario, solicitudes y ciudades
 		$all_category = $repositoryCategory->findAll();
 		$all_users = $repositoryUsers->findAll();
+		$all_city = $repositoryCity->findAll();
 
-		// Buscamos los mensajes recibidos del usuario
-		$allMessageRecivingUser = $repositoryMessage->findByUserReciving($user->getId());
-
-		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users, 'allMessageRecivingUser'=>$allMessageRecivingUser]);		
+		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users, 'allMessage'=>$allMessage, 'all_city'=>$all_city, 'all_request'=>$allRequest]);		
 	}
 
 	/**
@@ -81,9 +89,12 @@ class DefaultController extends Controller {
 	public function createService(){
 		$entityManager = $this->getDoctrine()->getManager();
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);;
-		// buscamos la categoria por la id que hemos recibido
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);;
+		// buscamos la categoria y la ciudad por la id que hemos recibido
+		$data['city']=$repositoryCity->findOneById($_POST['city']);
 		$data['category']=$repositoryCategory->findOneById($_POST['category']);
 		$data['name']=$_POST['name'];
+		$data['time']=$_POST['time'];
 
 		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
 		$imagen = $_FILES['img']['name'];
@@ -100,7 +111,7 @@ class DefaultController extends Controller {
 		$entityManager->persist($new_service);
 		$entityManager->flush();
 
-		return $this->redirectToRoute("AreaPrivada");
+		return $this->redirectToRoute("areaprivada");
 	}
 
 	/**
@@ -122,7 +133,7 @@ class DefaultController extends Controller {
 		$entityManager->persist($new_category);
 		$entityManager->flush();
 
-		return $this->redirectToRoute("AreaPrivada");
+		return $this->redirectToRoute("areaprivada");
 
 	}
 
@@ -155,7 +166,7 @@ class DefaultController extends Controller {
 		$entityManager->persist($new_message);
 		$entityManager->flush();
 
-		return $this->redirectToRoute("AreaPrivada");
+		return $this->redirectToRoute("areaprivada");
 
 	}
 
@@ -174,7 +185,7 @@ class DefaultController extends Controller {
 		$entityManager->persist($new_city);
 		$entityManager->flush();
 
-		return $this->redirectToRoute("AreaPrivada");
+		return $this->redirectToRoute("areaprivada");
 	}
 
 	/**
@@ -182,9 +193,72 @@ class DefaultController extends Controller {
 	 * METODO QUE ENVIA UNA SOLICITUD DE SERVICIO A UN USUARIO
 	 */
 	public function sendRequest(){
+
 		$entityManager = $this->getDoctrine()->getManager();
+		$repositoryService = $this->getDoctrine()->getRepository(Service::class);;
 
+		// buscamos el servicio en base de datos con la id que tenemos
+		$data['service'] = $repositoryService->find($_POST['serviceId']);
 
+		// cogemos el usuario logeado
+		$token = $this->get('security.token_storage')->getToken();
+		$data['userRequest'] = $token->getUser();
+
+		// creamos un mensaje con el servicio y el usuario
+		$newRequest = new Request($data);
+
+		$entityManager->persist($newRequest);
+		$entityManager->flush();
+
+		return $this->redirectToRoute("index");
+	}
+
+	/**
+	 * @Route("/acceptRequest", name="acceptRequest")
+	 * METODO QUE ACEPTA LA SOLICITUD DE UN SERVICIO
+	 */
+	public function acceptRequest(){
+		$entityManager = $this->getDoctrine()->getManager();
+		$repositoryRequest = $this->getDoctrine()->getRepository(Request::class);
+		
+		// buscamos la solicitud en base de datos con la id recibida
+		$requestModify = $repositoryRequest->find($_POST['requestId']);
+
+		//Comprobamos si hemos rechazado o aceptado la solicitud
+		if(isset($_POST['accept'])){
+			$requestModify->setAccept(1);
+		} else if (isset($_POST['deny'])){
+			$requestModify->setAccept(0);
+		}
+
+		// Lo modificamos en base de datos
+		$entityManager->merge($requestModify);
+		$entityManager->flush();
+
+		return $this->redirectToRoute("areaprivada");
+
+	}
+
+	
+	/**
+	 * @Route("/finishRequest", name="finishRequest")
+	 * METODO QUE ACEPTA LA SOLICITUD DE UN SERVICIO
+	 */
+	public function finishRequest(){
+		$entityManager = $this->getDoctrine()->getManager();
+		$repositoryRequest = $this->getDoctrine()->getRepository(Request::class);
+		
+		// buscamos la solicitud en base de datos con la id recibida
+		$requestModify = $repositoryRequest->find($_POST['requestId']);
+
+		//Marcamos el servicio como finalizado
+		$requestModify->setFinish(true);
+
+		// Lo modificamos en base de datos
+		$entityManager->merge($requestModify);
+		$entityManager->flush();
+
+		return $this->redirectToRoute("areaprivada");
 
 	}
 

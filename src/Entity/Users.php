@@ -73,16 +73,32 @@ class Users implements UserInterface
     private $img;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Request", mappedBy="userRequest")
+     */
+    private $requests;
+
+    /**
      * Contrsctor del objeto
      */
-    public function __contsruct($data){
+    public function __construct($data){
         $this->messages = new ArrayCollection();
         $this->services = new ArrayCollection();
-        $this->email = $data['email'];
-        $this->password = $data['password'];
-        $this->name = $data['name'];
-        $this->lastName = $data['lastName'];
-        $this->city = $data['city'];
+        $this->requests = new ArrayCollection();
+        if(isset($data['email'])){
+            $this->email = $data['email'];
+        }
+        if(isset($data['password'])){
+            $this->password = $data['password'];
+        }
+        if(isset($data['name'])){
+            $this->name = $data['name'];
+        }
+        if(isset($data['lastName'])){
+            $this->lastName = $data['lastName'];
+        }
+        if(isset($data['city'])){
+            $this->city = $data['city'];
+        }
         $this->time = 0;        
     }
 
@@ -289,6 +305,37 @@ class Users implements UserInterface
     public function setImg(string $img): self
     {
         $this->img = $img;
+        return $this;
+    }
+
+    /**
+     * @return Collection|Request[]
+     */
+    public function getRequests(): Collection
+    {
+        return $this->requests;
+    }
+
+    public function addRequest(Request $request): self
+    {
+        if (!$this->requests->contains($request)) {
+            $this->requests[] = $request;
+            $request->setUserRequest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRequest(Request $request): self
+    {
+        if ($this->requests->contains($request)) {
+            $this->requests->removeElement($request);
+            // set the owning side to null (unless already changed)
+            if ($request->getUserRequest() === $this) {
+                $request->setUserRequest(null);
+            }
+        }
+
         return $this;
     }
 }

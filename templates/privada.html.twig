@@ -33,7 +33,7 @@
 
       <fieldset>
         <legend>CREAR CATEGORÍA</legend>
-        <form action="/createCategory" method="POST" enctype="multipart/form-data">
+        <form enctype="multipart/form-data" action="./createCategory" method="POST">
           Nombre: <input type="text" name="name">
           Imagen: <input type="file" name="img">
           <input type="submit" value="Crear categoria">
@@ -42,12 +42,19 @@
       
       <fieldset>
         <legend>CREAR SERVICIO</legend>
-        <form action="./createService" method="POST" enctype="multipart/form-data">
+        <form enctype="multipart/form-data" action="./createService" method="POST">
           Nombre: <input type="text" name="name">
+          Tiempo: <input type="number" name="time">
           
           Categoría: <select name="category">
             {% for category in all_category %}
               <option value="{{category.getId}}">{{category.getName}}</option>
+            {% endfor %}
+          </select>
+
+          Ciudad: <select name="city">
+            {% for city in all_city %}
+              <option value="{{city.getId}}">{{city.getName}}</option>
             {% endfor %}
           </select>
           
@@ -91,12 +98,45 @@
           </div>
         {% endfor %}
       </div>
+
+      <div id="containerRequest">
+        <h2>SOLICITUDES RECIBIDAS</h2>
+        {% for request in all_request %}
+          <div class="request">
+              <h5>{{request.accept}}</h5>
+            
+            <!--SOLICITUDES PENDIENTES-->
+            {% if request.accept == 2 %}
+              <p>El usuario {{request.getUserRequest.getEmail}} a solicitado tu servicio de {{request.getService.getName}}</p>
+              <p>Fecha: {{request.getDate}}</p>
+              <!--FORMULARIO PARA ACEPTAR O RECHAZAR LA OFERTA-->
+              <form action="./acceptRequest" method="POST">
+                <input type="submit" name="accept" value="Aceptar">
+                <input type="submit" name="deny" value="Rechazar">
+                <input type="hidden" name="requestId" value="{{request.getId}}">
+              </form>
+
+            {% elseif  request.accept == 1 %}
+
+              {% if request.finish == 0 %}
+                <p>El usuario {{request.getUserRequest.getEmail}} a solicitado tu servicio de {{request.getService.getName}}</p>
+                <p>Fecha: {{request.getDate}}</p>
+                <!--FORMULARIO MARCAR COMO FINALIZADO EL SERVICIO-->
+                <form action="./finishRequest" method="POST">
+                  <input type="hidden" name="requestId" value="{{request.getId}}">
+                  <input type="submit" name="finish" value="Finalizado">
+                </form>
+              {% endif %}
+            {% endif %}
+
+          </div>
+        {% endfor %}
+      </div>
     </main>
 
 
     <footer>
         <form action="" method="POST">
-
             Email: <input type="text" name="email">
             Nombre: <input type="text" name="name">
             Teléfono: <input type="text" name="telephone">
@@ -104,33 +144,4 @@
             <input type="submit" name="send" value="Contactar">
         </form>
     </footer>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 {% endblock %}
