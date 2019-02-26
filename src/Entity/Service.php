@@ -37,8 +37,9 @@ class Service
      * @ORM\ManyToOne(targetEntity="App\Entity\Users", inversedBy="services")
      */
     private $userOffer;
-    
-    /*
+
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="services")
      */
     private $city;
@@ -107,8 +108,7 @@ class Service
 
         return $this;
     }
-
-    public function getUserOffer(): ?users
+   public function getUserOffer(): ?users
     {
         return $this->userOffer;
     }

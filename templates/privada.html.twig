@@ -10,6 +10,11 @@
       
       <h1>TITULO WEB</h1>
 
+      
+         <br>
+         <button onclick="window.location.href='/editarPerfil'">Editar perfil</button>
+         <br>
+
       <!--MENU CON BOOSTRAP-->
       <div class="container" id="nav">
         <nav class="nav nav-pills nav-justified mt-2">
@@ -17,7 +22,8 @@
           <a class="nav-link nav-item active" href="#">Opción 2</a>
           <a class="nav-link nav-item" href="#">Opción 3</a>
           <a class="nav-link nav-item" href="#">Opción 4</a>
-          <a class="nav-link nav-item disabled" href="#">Opción 5</a>¡
+          <a class="nav-link nav-item disabled" href="#">Opción 5</a>
+        </nav>
       </div>
     </header>
 
@@ -33,15 +39,8 @@
 
       <fieldset>
         <legend>CREAR CATEGORÍA</legend>
-<<<<<<< HEAD
         <form enctype="multipart/form-data" action="./createCategory" method="POST">
-=======
-<<<<<<< HEAD
-        <form enctype="multipart/form-data" action="./createCategory" method="POST">
-=======
-        <form action="/createCategory" method="POST" enctype="multipart/form-data">
->>>>>>> 06347ec57dbc4530810868f285dfcc750ad3ea7b
->>>>>>> 98e2f661ab0a51dee82957c2dc0061dce9c94539
+
           Nombre: <input type="text" name="name">
           Imagen: <input type="file" name="img">
           <input type="submit" value="Crear categoria">
@@ -57,13 +56,13 @@
           
           Categoría: <select name="category">
             {% for category in all_category %}
-              <option value="{{category.getId}}">{{category.getName}}</option>
+              <option value="{{category.id}}">{{category.name}}</option>
             {% endfor %}
           </select>
 
           Ciudad: <select name="city">
             {% for city in all_city %}
-              <option value="{{city.getId}}">{{city.getName}}</option>
+              <option value="{{city.id}}">{{city.name}}</option>
             {% endfor %}
           </select>
           
@@ -79,7 +78,7 @@
           
           Destinatario: <select name="userReciving">
             {% for user in all_users %}
-              <option value="{{user.getId}}">{{user.getEmail}}</option>
+              <option value="{{user.id}}">{{user.email}}</option>
             {% endfor %}
           </select>
           
@@ -93,10 +92,10 @@
         <h1>MENSAJES RECIBIDOS</h1>
         {% for messageReciving in allMessageRecivingUser %}
           <div class="message">
-            <p>Fecha: {{messageReciving.getDate}}</p>
-            <p>Usuario que envia: {{messageReciving.getUserSend.getEmail}}</p>
-            <p>Usuario que recibe: {{messageReciving.getUserReciving.getEmail}}</p>
-            <p>Mensaje: {{messageReciving.getBodyMessage}}</p>
+            <p>Fecha: {{messageReciving.date}}</p>
+            <p>Usuario que envia: {{messageReciving.userSend.email}}</p>
+            <p>Usuario que recibe: {{messageReciving.userReciving.email}}</p>
+            <p>Mensaje: {{messageReciving.bodyMessage}}</p>
 
             <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
             {% if messageReciving.getCheckRead == 0 %}

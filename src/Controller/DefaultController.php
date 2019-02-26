@@ -1,8 +1,10 @@
 <?php
 namespace App\Controller;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\Date;
 use App\Entity\Users;
@@ -12,6 +14,7 @@ use App\Entity\Category;
 use App\Entity\Request;
 use App\Entity\City;
 use App\Entity\Contacto;
+
 
 // $token = $this->get('security.token_storage')->getToken();
 // $user = $token->getUser(); OBTENER USUARIO LOGEADO.
@@ -27,21 +30,49 @@ class DefaultController extends Controller {
 	public function index(){
 		// Con esto descargamos el usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
- 		$user = $token->getUser();
-		
-		//descargamos todos los servicios que tenemos en base de datos para mostrar en la vista
-		$repositoryService = $this->getDoctrine()->getRepository(Service::class);
+		$user = $token->getUser();
+
+		if($user == "anon."){ //USUARIO NO LOGEADO
+
+			//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
+			$repositoryService = $this->getDoctrine()->getRepository(Service::class);
 		// Descargamos todos los servicios
-		$all_services = $repositoryService->findAll();
+			$all_services = $repositoryService->findAll();
 
-		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
-		$ciudades = $repositoryCity->findAll();
+			$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+			$ciudades = $repositoryCity->findAll();
 
-		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
-		$categorias = $repositoryCategory->findAll();
+			$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+			$categorias = $repositoryCategory->findAll();
+
+
+			return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades,
+				'all_categories'=>$categorias]);
+
+			
+		}else{
+
+			$token = $this->get('security.token_storage')->getToken();
+			$user = $token->getUser();
+
+			$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+
+			$ciudad = $repositoryCity->findOneByName($user->getCity());
+
+			$servicios = $ciudad->getServices();
+
+			$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+			$categorias = $repositoryCategory->findAll();
+
+			return $this->render('index.html.twig', ['all_services'=>$servicios,
+				'all_categories'=>$categorias, 'user' => $user]);
+
+		}
 		
 		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades, 'all_categories'=>$categorias, 'userLogged'=>$user]);		
 	}
+
+	
 
 	/**
      * @Route("/logout", name="app_logout")
@@ -54,11 +85,13 @@ class DefaultController extends Controller {
 	 * @Route("/areaprivada", name="areaprivada")
 	 */
 	public function areaprivada(){
+
+		if(! $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY')){
+		}
 		//Cogemos los repositorios
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
-	
 		// Usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser();
@@ -304,32 +337,91 @@ class DefaultController extends Controller {
 	 */
 	public function filtro(){
 
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser();
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 
-		$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
+		if($user == "anon."){
 
-		$todosServicios = $ciudad->getServices();
+			if($_POST['ciudadElegida'] != "0" && $_POST['categoriaElegida'] != "0"){
 
-		foreach ($todosServicios as $key => $value) {
-			if($value->getCategory == $_POST['categoriaElegida']){
-				$servicios[] = $todosServicios[$key];
+				$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
+
+				$todosServicios = $ciudad->getServices();
+
+				foreach ($todosServicios as $key => $value) {
+
+					if($value->getCategory()->getName() == $_POST['categoriaElegida']){
+						$servicios[] = $todosServicios[$key];
+					}
 			}
+
 		}
 
-		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+		if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] != "0"){
+
+			$categoria = $repositoryCategory->findOneByName($_POST['categoriaElegida']);
+
+			$servicios = $categoria->getServices();
+
+		}
+
+		if($_POST['ciudadElegida'] != "0" && $_POST['categoriaElegida'] == "0"){
+
+			$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
+
+			$servicios = $ciudad->getServices();
+
+		}
+
+		if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] == "0"){
+
+			$servicios = $repositoryService->findAll();
+		}
+
 		$ciudades = $repositoryCity->findAll();
 
-		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 		$categorias = $repositoryCategory->findAll();
 		
-		return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_cities'=>$ciudades, 'all_categories'=>$categorias, 'userLogged'=>$user]);		
+		return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_cities'=>$ciudades,
+			'all_categories'=>$categorias, 'userLogged'=>$user]);
+
+		}else{
+
+			if($_POST['categoriaElegida'] == "0"){
+
+				return $this->redirectToRoute("index");
+			}else{
+
+				$categoria = $repositoryCategory->findOneByName($_POST['categoriaElegida']);
+
+				$ciudad = $user->getCity();
+
+				$categorias = $repositoryCategory->findAll();
+
+				$todosServicios = $categoria->getServices();
+
+				foreach ($todosServicios as $key => $value) {
+
+					if($value->getCity()->getName() == $ciudad ){
+						$servicios[] = $todosServicios[$key];
+						
+					}
+				}
+
+				return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_categories'=>$categorias, 'user'=>$user]);
+			}
+		}
 	}
 
+	
+
 	/**
-	 * @Route("/editarContacto", name="editar")
+	 * @Route("/editarPerfil", name="editar")
 	 * CREAR MENSAJE
 	 */
-	public function editarPerfil(){
+	public function editar(){
 
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser(); 
@@ -337,38 +429,72 @@ class DefaultController extends Controller {
 		if(isset($_POST['modificar'])){
 
 			if($_POST['nuevoName'] != ""){
-
 				$user->setName($_POST['nuevoName']);
 
 			}
 
 			if($_POST['nuevoLastName'] != ""){
-
 				$user->setLastName($_POST['nuevoLastName']);
-
 			}
 
 			if($_POST['nuevoCity'] != ""){
-
 				$user->setCity($_POST['nuevoCity']);
-
 			}
 
 			if ($_FILES['nuevoImg']['name'] != null) {
-
 				move_uploaded_file($_FILES['nuevoImg']['tmp_name'], $_FILES['nuevoImg']['name']);
 				$imagen = $_FILES['nuevoImg']['name'];
 				$user->setImg($imagen);
-
 			}
+
 
 			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->merge($user);
 			$entityManager->flush();
+
 		}
 
 		return $this->render('editarContacto.html.twig', ['userLogeado'=>$user]);
 
 	}
 
-}
+	/**
+	 * @Route("/baja", name="darDeBaja")
+	 * CREAR MENSAJE
+	 */
+	public function darDeBaja()
+	{
+
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser();
+
+		$entityManager = $this->getDoctrine()->getManager();
+		$entityManager->remove($user);
+
+		return $this->redirectToRoute("app_logout");
+
+
+	}
+
+	/**
+	 * @Route("/facturar", name="factura")
+	 * METODO QUE RESTA LOS MINUTOS DEL DEMANDANTE Y SE LOS PASA AL PRESTADOR DEL SERVICIO
+	 */
+	public function facturaServicio(){
+
+												//servicioTime sera el tiempo del servicio realizado.
+		$this->setTime(parseInt($this->getTime()) - parseInt($_POST['servicioTime']));		
+
+		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
+			$prestador = $repositoryUsers->find($_POST['prestadorId']);//sacamos al prestador del servicio
+			$prestador->setTime(parseInt($prestador->getTime()) - parseInt($_POST['servicioTime']));
+																		//y aumentamos su tiempo
+
+
+			return $this->redirectToRoute("index"); //redirección a index por defecto, eres libre de modificarlo 											david
+
+		}
+
+
+	}
+

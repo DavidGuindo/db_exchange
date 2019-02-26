@@ -61,11 +61,12 @@ class Users implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Message", mappedBy="userSend")
      */
     private $messages;
-
+    
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Service", mappedBy="userOffer")
      */
     private $services;
+
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -259,6 +260,17 @@ class Users implements UserInterface
         return $this;
     }
 
+
+    public function comprobarSaldo($cantidad){  //en cantidad le pasaremos lo que se le va a cobrar
+        if($this->time - $cantidad < 300){
+            return false;
+        }else{
+           return true;
+       }
+
+   }
+
+
     /**
      * @return Collection|Service[]
      */
@@ -287,15 +299,6 @@ class Users implements UserInterface
             }
         }
     }
-    
-    public function comprobarSaldo($cantidad){  //en cantidad le pasaremos lo que se le va a cobrar
-        if($this->time - $cantidad < 300){
-            return false;
-        }else{
-           return true;
-       }
-       
-   }
 
     public function getImg(): ?string
     {
