@@ -56,23 +56,24 @@ class DefaultController extends Controller {
 			$user = $token->getUser();
 
 			$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+			$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 
+			$categorias = $repositoryCategory->findAll();
 			$ciudad = $repositoryCity->findOneByName($user->getCity());
 
 			$servicios = $ciudad->getServices();
 
-			$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
-			$categorias = $repositoryCategory->findAll();
+			// SI NO HAY SERVICIOS
+			if (empty($servicios)){
+				return $this->render('index.html.twig', ['all_categories'=>$categorias, 'user' => $user]);
+			}
 
-			return $this->render('index.html.twig', ['all_services'=>$servicios,
-				'all_categories'=>$categorias, 'user' => $user]);
+			return $this->render('index.html.twig', ['all_services'=>$servicios,'all_categories'=>$categorias, 'user' => $user]);
 
 		}
 		
 		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades, 'all_categories'=>$categorias, 'userLogged'=>$user]);		
 	}
-
-	
 
 	/**
      * @Route("/logout", name="app_logout")
@@ -482,19 +483,17 @@ class DefaultController extends Controller {
 	 */
 	public function facturaServicio(){
 
-												//servicioTime sera el tiempo del servicio realizado.
+		//servicioTime sera el tiempo del servicio realizado.
 		$this->setTime(parseInt($this->getTime()) - parseInt($_POST['servicioTime']));		
 
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
-			$prestador = $repositoryUsers->find($_POST['prestadorId']);//sacamos al prestador del servicio
-			$prestador->setTime(parseInt($prestador->getTime()) - parseInt($_POST['servicioTime']));
-																		//y aumentamos su tiempo
+		$prestador = $repositoryUsers->find($_POST['prestadorId']);//sacamos al prestador del servicio
+		$prestador->setTime(parseInt($prestador->getTime()) - parseInt($_POST['servicioTime'])); //y aumentamos su tiempo
+																	
 
 
-			return $this->redirectToRoute("index"); //redirección a index por defecto, eres libre de modificarlo 											david
-
-		}
-
+		return $this->redirectToRoute("index"); //redirección a index por defecto, eres libre de modificarlo 											david
 
 	}
+}
 

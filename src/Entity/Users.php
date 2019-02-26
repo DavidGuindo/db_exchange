@@ -67,12 +67,6 @@ class Users implements UserInterface
      */
     private $services;
 
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $img;
-
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Request", mappedBy="userRequest")
      */
@@ -298,17 +292,6 @@ class Users implements UserInterface
                 $service->setUserOffer(null);
             }
         }
-    }
-
-    public function getImg(): ?string
-    {
-        return $this->img;
-    }
-
-    public function setImg(string $img): self
-    {
-        $this->img = $img;
-        return $this;
     }
 
     /**
