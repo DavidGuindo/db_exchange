@@ -34,39 +34,37 @@ class DefaultController extends Controller {
 		if($user == "anon."){ //USUARIO NO LOGEADO
 
 			//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
-		$repositoryService = $this->getDoctrine()->getRepository(Service::class);
+			$repositoryService = $this->getDoctrine()->getRepository(Service::class);
 		// Descargamos todos los servicios
-		$all_services = $repositoryService->findAll();
+			$all_services = $repositoryService->findAll();
 
-		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
-		$ciudades = $repositoryCity->findAll();
+			$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+			$ciudades = $repositoryCity->findAll();
 
-		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
-		$categorias = $repositoryCategory->findAll();
-		
+			$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+			$categorias = $repositoryCategory->findAll();
 
-		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades,
-			'all_categories'=>$categorias]);
+
+			return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades,
+				'all_categories'=>$categorias]);
 
 			
 		}else{
 
-		$token = $this->get('security.token_storage')->getToken();
-		$user = $token->getUser();
+			$token = $this->get('security.token_storage')->getToken();
+			$user = $token->getUser();
 
-		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+			$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 
-		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+			$ciudad = $repositoryCity->findOneByName($user->getCity());
 
-		$ciudad = $repositoryCity->findOneByName($user->getCity());
+			$servicios = $ciudad->getServices();
 
-		$servicios = $ciudad->getServices();
+			$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+			$categorias = $repositoryCategory->findAll();
 
-		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
-		$categorias = $repositoryCategory->findAll();
-		
-		return $this->render('index.html.twig', ['all_services'=>$servicios,
-			'all_categories'=>$categorias, 'user' => $user]);
+			return $this->render('index.html.twig', ['all_services'=>$servicios,
+				'all_categories'=>$categorias, 'user' => $user]);
 
 		}
 		
@@ -228,9 +226,16 @@ class DefaultController extends Controller {
 	 */
 	public function filtro(){
 
-		if($_POST['ciudadElegida'] != "0" && $_POST['categoriaElegida'] != "0"){
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser();
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 
-			$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+		if($user == "anon."){
+
+			if($_POST['ciudadElegida'] != "0" && $_POST['categoriaElegida'] != "0"){
+
+			
 
 			$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
 
@@ -248,7 +253,7 @@ class DefaultController extends Controller {
 
 		if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] != "0"){
 
-			$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+			
 
 			$categoria = $repositoryCategory->findOneByName($_POST['categoriaElegida']);
 
@@ -258,8 +263,6 @@ class DefaultController extends Controller {
 
 		if($_POST['ciudadElegida'] != "0" && $_POST['categoriaElegida'] == "0"){
 
-			$repositoryCity = $this->getDoctrine()->getRepository(City::class);
-
 			$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
 
 			$servicios = $ciudad->getServices();
@@ -267,20 +270,52 @@ class DefaultController extends Controller {
 		}
 
 		if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] == "0"){
-			//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
-			$repositoryService = $this->getDoctrine()->getRepository(Service::class);
-		// Descargamos todos los servicios
+
 			$servicios = $repositoryService->findAll();
 		}
 
-		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 		$ciudades = $repositoryCity->findAll();
 
-		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 		$categorias = $repositoryCategory->findAll();
 		
 		return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_cities'=>$ciudades,
-			'all_categories'=>$categorias]);		
+			'all_categories'=>$categorias]);
+
+		}else{
+
+			if($_POST['categoriaElegida'] == "0"){
+
+				return $this->redirectToRoute("index");
+
+				
+				
+
+			}else{
+
+
+			$categoria = $repositoryCategory->findOneByName($_POST['categoriaElegida']);
+
+			$ciudad = $user->getCity();
+
+			$categorias = $repositoryCategory->findAll();
+
+			$todosServicios = $categoria->getServices();
+
+			foreach ($todosServicios as $key => $value) {
+
+				if($value->getCity()->getName() == $ciudad ){
+					$servicios[] = $todosServicios[$key];
+					
+				}
+			}
+
+			return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_categories'=>$categorias, 'user'=>$user]);
+
+			}
+
+		}
+
+				
 	}
 
 	
@@ -384,17 +419,17 @@ class DefaultController extends Controller {
 	public function facturaServicio(){
 
 												//servicioTime sera el tiempo del servicio realizado.
-			$this->setTime(parseInt($this->getTime()) - parseInt($_POST['servicioTime']));		
+		$this->setTime(parseInt($this->getTime()) - parseInt($_POST['servicioTime']));		
 
-			$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
+		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
 			$prestador = $repositoryUsers->find($_POST['prestadorId']);//sacamos al prestador del servicio
 			$prestador->setTime(parseInt($prestador->getTime()) - parseInt($_POST['servicioTime']));
 																		//y aumentamos su tiempo
-		
+
 
 			return $this->redirectToRoute("index"); //redirección a index por defecto, eres libre de modificarlo 											david
 
+		}
+
+
 	}
-
-
-}
