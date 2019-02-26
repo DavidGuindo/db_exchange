@@ -1,5 +1,6 @@
 <?php
 namespace App\Controller;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,8 +30,10 @@ class DefaultController extends Controller {
 		// Con esto descargamos el usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser();
-		
-		//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
+
+		if($user == "anon."){ //USUARIO NO LOGEADO
+
+			//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
 		$repositoryService = $this->getDoctrine()->getRepository(Service::class);
 		// Descargamos todos los servicios
 		$all_services = $repositoryService->findAll();
@@ -43,16 +46,37 @@ class DefaultController extends Controller {
 		
 
 		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades,
-			'all_categories'=>$categorias]);		
+			'all_categories'=>$categorias]);
 
-		return $this->render('index.html.twig', ['all_services'=>$all_services, 'userLogged'=>$user]);		
+			
+		}else{
 
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser();
+
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+
+		$ciudad = $repositoryCity->findOneByName($user->getCity());
+
+		$servicios = $ciudad->getServices();
+
+		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+		$categorias = $repositoryCategory->findAll();
+		
+		return $this->render('index.html.twig', ['all_services'=>$servicios,
+			'all_categories'=>$categorias]);
+
+		}
+		
 	}
+
+	
 
 	/**
      * @Route("/logout", name="app_logout")
      */
-
 	public function salir(Request $request): Response
 	{
 		return $this->index($request);
@@ -212,7 +236,7 @@ class DefaultController extends Controller {
 
 
 			foreach ($todosServicios as $key => $value) {
-					
+
 				if($value->getCategory()->getName() == $_POST['categoriaElegida']){
 					$servicios[] = $todosServicios[$key];
 					
@@ -261,11 +285,13 @@ class DefaultController extends Controller {
 			'all_categories'=>$categorias]);		
 	}
 
+	
+
 	/**
-	 * @Route("/editarContacto", name="editar")
+	 * @Route("/editarPerfil", name="editar")
 	 * CREAR MENSAJE
 	 */
-	public function editarPerfil(){
+	public function editar(){
 
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser(); 
@@ -323,7 +349,7 @@ class DefaultController extends Controller {
 		$entityManager = $this->getDoctrine()->getManager();
 		$entityManager->remove($user);
 
-		return $this->redirectToRoute("/");
+		return $this->redirectToRoute("index");
 
 
 	}
@@ -350,6 +376,26 @@ class DefaultController extends Controller {
 		$entityManager->flush();
 
 		return $this->redirectToRoute("index");
+	}
+
+
+	/**
+	 * @Route("/facturar", name="factura")
+	 * METODO QUE RESTA LOS MINUTOS DEL DEMANDANTE Y SE LOS PASA AL PRESTADOR DEL SERVICIO
+	 */
+	public function facturaServicio(){
+
+												//servicioTime sera el tiempo del servicio realizado.
+			$this->setTime(parseInt($this->getTime()) - parseInt($_POST['servicioTime']));		
+
+			$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
+			$prestador = $repositoryUsers->find($_POST['prestadorId']);//sacamos al prestador del servicio
+			$prestador->setTime(parseInt($prestador->getTime()) - parseInt($_POST['servicioTime']));
+																		//y aumentamos su tiempo
+		
+
+			return $this->redirectToRoute("index"); //redirección a index por defecto, eres libre de modificarlo 											david
+
 	}
 
 

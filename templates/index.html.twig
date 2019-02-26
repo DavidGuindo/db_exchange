@@ -11,6 +11,7 @@
        
          <h1>TITULO WEB</h1>
 
+
          <!--MENU CON BOOSTRAP-->
       <div class="container" id="nav">
         <nav class="nav nav-pills nav-justified mt-2">
@@ -69,12 +70,16 @@
 
 
         <form action="/buscador" method="POST">
+
+
+        {% if all_cities is defined %}
         <select name="ciudadElegida">
             <option value="0">SELECCIONE UNA CIUDAD</option>
             {% for city in all_cities %}
             <option value="{{city.name}}">{{city.name}}</option>
             {% endfor %}
         </select>
+        {% endif %}
         <select name="categoriaElegida">
             <option value="0">SELECCIONE UNA CATEGORIA</option>
             {% for category in all_categories %}
