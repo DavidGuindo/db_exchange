@@ -82,15 +82,15 @@
 
       <div id="containerMessage">
         <h2>MENSAJES RECIBIDOS</h2>
-        {% for messageReciving in allMessageRecivingUser %}
+        {% for message in allMessage %}
           <div class="message">
-            <p>Fecha: {{messageReciving.getDate}}</p>
-            <p>Usuario que envia: {{messageReciving.getUserSend.getEmail}}</p>
-            <p>Usuario que recibe: {{messageReciving.getUserReciving.getEmail}}</p>
-            <p>Mensaje: {{messageReciving.getBodyMessage}}</p>
+            <p>Fecha: {{message.getDate}}</p>
+            <p>Usuario que envia: {{message.getUserSend.getEmail}}</p>
+            <p>Usuario que recibe: {{message.getUserReciving.getEmail}}</p>
+            <p>Mensaje: {{message.getBodyMessage}}</p>
 
             <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
-            {% if messageReciving.getCheckRead == 0 %}
+            {% if message.getCheckRead == 0 %}
               <p>NO LEIDO</p>
             {% else %}
               <p>LEIDO</p>
@@ -103,7 +103,10 @@
         <h2>SOLICITUDES RECIBIDAS</h2>
         {% for request in all_request %}
           <div class="request">
-            {% if request.accept == 0 %}
+              <h5>{{request.accept}}</h5>
+            
+            <!--SOLICITUDES PENDIENTES-->
+            {% if request.accept == 2 %}
               <p>El usuario {{request.getUserRequest.getEmail}} a solicitado tu servicio de {{request.getService.getName}}</p>
               <p>Fecha: {{request.getDate}}</p>
               <!--FORMULARIO PARA ACEPTAR O RECHAZAR LA OFERTA-->
@@ -113,7 +116,7 @@
                 <input type="hidden" name="requestId" value="{{request.getId}}">
               </form>
 
-            {% else %}
+            {% elseif  request.accept == 1 %}
 
               {% if request.finish == 0 %}
                 <p>El usuario {{request.getUserRequest.getEmail}} a solicitado tu servicio de {{request.getService.getName}}</p>
@@ -124,8 +127,8 @@
                   <input type="submit" name="finish" value="Finalizado">
                 </form>
               {% endif %}
-
             {% endif %}
+
           </div>
         {% endfor %}
       </div>

@@ -34,7 +34,7 @@ class Service
     private $img;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\users", inversedBy="services")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Users", inversedBy="services")
      */
     private $userOffer;
 

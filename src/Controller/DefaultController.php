@@ -51,25 +51,30 @@ class DefaultController extends Controller {
 		//Cogemos los repositorios
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
-		$repositoryRequest = $this->getDoctrine()->getRepository(Request::class);
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
-		$repositoryMessage = $this->getDoctrine()->getRepository(Message::class);
 	
 		// Usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser();
+
+		// solicitudes del usuario
+		$allRequest = $user->getRequests();
 		
+		foreach($allRequest as $request ){
+			echo $request->getService()->getName();
+			echo $request->getAccept()."<br>";
+
+		}
+		
+		// solicitudes del usuario
+		$allMessage = $user->getMessages();
 
 		// Descargamos todos las categorias, usuario, solicitudes y ciudades
 		$all_category = $repositoryCategory->findAll();
 		$all_users = $repositoryUsers->findAll();
 		$all_city = $repositoryCity->findAll();
-		$all_request = $repositoryRequest->findAll();
 
-		// Buscamos los mensajes recibidos del usuario
-		$allMessageRecivingUser = $repositoryMessage->findByUserReciving($user->getId());
-
-		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users, 'allMessageRecivingUser'=>$allMessageRecivingUser, 'all_city'=>$all_city, 'all_request'=>$all_request]);		
+		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users, 'allMessage'=>$allMessage, 'all_city'=>$all_city, 'all_request'=>$allRequest]);		
 	}
 
 	/**
@@ -216,9 +221,9 @@ class DefaultController extends Controller {
 
 		//Comprobamos si hemos rechazado o aceptado la solicitud
 		if(isset($_POST['accept'])){
-			$requestModify->setAccept(true);
+			$requestModify->setAccept(1);
 		} else if (isset($_POST['deny'])){
-			$requestModify->setAccept(false);
+			$requestModify->setAccept(0);
 		}
 
 		// Lo modificamos en base de datos
