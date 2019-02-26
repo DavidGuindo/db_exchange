@@ -44,11 +44,6 @@ class Service
     private $city;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="services")
-     */
-    private $city;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $time;
@@ -131,18 +126,6 @@ class Service
     public function setCity(?city $city): self
     {
         $this->city = $city;
-        return $this;
-    }
-
-    public function getCity(): ?city
-    {
-        return $this->city;
-    }
-
-    public function setCity(?city $city): self
-    {
-        $this->city = $city;
-
         return $this;
     }
 

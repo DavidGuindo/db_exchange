@@ -1,63 +1,35 @@
-@import '~bootstrap-sass/assets/stylesheets/bootstrap';
+/*@import '~bootstrap-sass/assets/stylesheets/bootstrap';*/
 
 body {
-    width: 80%;
-    margin: 0 auto;
-}
+    background-image: url('../public/img/fondo5.jpg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    /* La imagen se fija en la ventana de visualización para que la altura de la imagen no supere a la del contenido */
+    background-attachment: fixed;
+    /* La imagen de fondo se reescala automáticamente con el cambio del ancho de ventana del navegador */
+    background-size: cover;
+    background-color: #cccccc;
+    }
+    
+    .container-login {
+      margin-top: 150px;
+      margin-bottom: 150px;
+    }
 
-header {
-    background-color: red;
-}
-
-#nav {
-    height: 50px;
-    width: 100%;
-    background-color: black;
-}
-
-#nav nav {
-    margin-top: 15px;
-}
-
-main {
-    margin: 0% auto;
-    background-color: chartreuse;
-}
-
-fieldset {
-    background-color: burlywood;
-    width: 85%;
-    margin: 0 auto;
-    margin-bottom: 20px;
-
-}
-
-#containerMessage {
-    width: 85%;
-    margin: 0 auto;
-    background-color: #aaa;
-
-}
-
-.message {
-    width: 20%;
-    background-color: #555;
-}
-
-#containerRequest {
-    width: 85%;
-    margin: 0 auto;
-    background-color: pink;
-}
-
-.request {
-    width: 20%;
-    background-color: orange;
-}
-
-footer {
-    background-color: blue;
-}
+    .container-register {
+      margin-top: 150px;
+      margin-bottom: 150px;
+    }
+    
+    .bg-login {
+      background-color: #F5ECCE;
+    }
+    
+    nav {
+        position: sticky;
+        top: 0; 
+        width: 100%;
+    }
 
 .card {
     background-color: #999;

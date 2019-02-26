@@ -11,6 +11,7 @@ use App\Entity\Service;
 use App\Entity\Category;
 use App\Entity\Request;
 use App\Entity\City;
+use App\Entity\Contacto;
 
 // $token = $this->get('security.token_storage')->getToken();
 // $user = $token->getUser(); OBTENER USUARIO LOGEADO.
@@ -168,6 +169,41 @@ class DefaultController extends Controller {
 
 		return $this->redirectToRoute("areaprivada");
 
+	}
+	
+	/**
+	 * @Route("/contacto", name="contacto")
+	 */
+	public function contacto(){
+		
+		return $this->render('contacto.html.twig');		
+	}
+
+	/**
+	 * @Route("/contactoEnviado", name="contactoEnviado")
+	 */
+	
+	public function contactoEnviado(){
+		$today = date("F j, Y, g:i a");                 // March 10, 2001, 5:16 pm
+        if(isset($_POST['contactoEnv'])) {
+			$contact = new Contacto($_POST['email'], $_POST['name'], $_POST['mensaje'], $today);
+			$manager = $this->getDoctrine()->getManager();
+			$manager->persist($contact);
+			$manager->flush($contact);
+		}
+		return $this->contacto();
+	}
+
+	/**
+	 * @Route("/contactoLeido", name="contactoLeido")
+	 */
+	// maybe
+	public function contactoLeido(Contacto $contact){
+			$value=true;
+			$contact->setLeido($value);
+			$manager = $this->getDoctrine()->getManager();
+            $manager->merge($contact);
+            $manager->flush($contact);
 	}
 
 	/**
@@ -334,6 +370,5 @@ class DefaultController extends Controller {
 		return $this->render('editarContacto.html.twig', ['userLogeado'=>$user]);
 
 	}
-
 
 }

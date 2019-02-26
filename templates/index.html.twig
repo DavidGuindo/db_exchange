@@ -2,41 +2,26 @@
 
 {% block body %}
 
-    <header>
+  <div class="container">
+    <main class="col-xl-8 col-lg-8 col-md-10 col-sm-11 mx-auto my-5 text-white text-justify">
+        <section>
+            <!--CABEZERA INTRODUCCIÓN-->
+            <div class="row">
+                      <article class="my-5">
+                          <h1 class="text-white ">Bienvenido a ExChange.</h1>
+                            <p>Saludos queridos usuarios, me gustaría daros a todos la bienvenida a ExChange y contaros un poco el funcionamiento.
+                            </p>
+                            <p>Bueno en primer lugar cualquier usuario de la web puede ver la información sobre los servicios que ofrecen los usuarios. Pero solo los usuarios registrados en este sitio web pueden ser participes de dichos servicios.
+                              Al demandar un servicio gastas "Tiempo" de tu cuenta, el cual es la moneda de cambio que se usa en este sitio. Para obtener dicha moneda has de realizar trabajos para otros miembros de la comunidad, a los cuales se les descontará el tiempo de sus cuentas, y se sumará a la tuya. Como contra prestación el otro usuario puede valorar tu servicio dandote así mejor o peor reputación. El último requisito es para el usuario solicitante de una oferta, Este ha de ser de la misma ciudad que el usuario ofertante sino no puede solicitar dicho trabajo, es obio. ¿No?
+                            </p>
+                            <p>Dicho esto daros las gracias a todos los usuarios por confiar en nosotros. Y esperamos que se cumplan vuestras expectativas.</p>
+                      </article>
+              </div>
+        </section>
 
-        <img src="LOGo">
-         <!--ENLACE AL AREA PRIVADA-->
-         <a href="./areaprivada"><img src="../assets/img/user.png" width="50px" height="50px" class="float-right"></a>
-         
-       
-         <h1>TITULO WEB</h1>
-
-         <!--MENU CON BOOSTRAP-->
-      <div class="container" id="nav">
-        <nav class="nav nav-pills nav-justified mt-2">
-          <a class="nav-link nav-item" href="#">Opción 1</a>
-          <a class="nav-link nav-item active" href="#">Opción 2</a>
-          <a class="nav-link nav-item" href="#">Opción 3</a>
-          <a class="nav-link nav-item" href="#">Opción 4</a>
-          <a class="nav-link nav-item disabled" href="#">Opción 5</a>
-        </nav>
-      </div>
-    </header>
-
-    <main>
-      <section>
-          <!--CABEZERA INTRODUCCIÓN-->
-          <h2>TITULO</h2>
-          <p>TEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTO
-              TEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTO
-              TEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTO
-              TEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTOTEXTO
-          </p>
-      </section>
-
-
-      <!--CAROUSEL CON CATEGORIAS-->
-      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+       <!--CAROUSEL CON CATEGORIAS-->
+       <!--
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
           <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
           <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
@@ -61,7 +46,7 @@
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="sr-only">Next</span>
         </a>
-      </div>
+      </div>-->
 
       <section>
       <br><br>
@@ -110,6 +95,7 @@
                       </form>
                   </div>
               </div>
+          </section>
             </td>
 
             {%  if counter == 3 %}
@@ -125,48 +111,7 @@
       </section>
 
     </main>
+    </div>
+    {% endblock %}
 
 
-    <footer>
-        <form action="" method="POST">
-
-            Email: <input type="text" name="email">
-            Nombre: <input type="text" name="name">
-            Teléfono: <input type="text" name="telephone">
-            Comentario: <textarea cols="30" rows="5" name="text"></textarea>
-            <input type="submit" name="send" value="Contactar">
-        </form>
-
-
-
-    </footer>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{% endblock %}
