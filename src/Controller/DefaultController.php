@@ -75,7 +75,7 @@ class DefaultController extends Controller {
 		
 		if(empty($servicios)){
 				return $this->render('index.html.twig', ['all_categories'=>$categorias, 'user' => $user]);
-			}
+		}
 
 		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades, 'all_categories'=>$categorias, 'userLogged'=>$user]);		
 	}
@@ -307,7 +307,6 @@ class DefaultController extends Controller {
 
 	}
 
-	
 	/**
 	 * @Route("/finishRequest", name="finishRequest")
 	 * METODO QUE FINALIZA LA SOLICITUD DE UN SERVICIO
@@ -352,6 +351,7 @@ class DefaultController extends Controller {
 		$user = $token->getUser();
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+		$servicios = [];
 
 		if($user == "anon."){
 
@@ -471,8 +471,7 @@ class DefaultController extends Controller {
 	 * @Route("/baja", name="darDeBaja")
 	 * MÉTODO PARA DAR DE BAJA UN USUARIO
 	 */
-	public function darDeBaja()
-	{
+	public function darDeBaja(){
 
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser();
