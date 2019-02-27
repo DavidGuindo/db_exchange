@@ -64,16 +64,16 @@
                                 {% endfor %}
                             </select>
                             <input type="submit" value="Filtrar"></form>
-                            <table style="width:100%">
+                            <table style="width:100%; border:0px;">
                                 {% set counter = 1 %}
                                 {% if all_services is defined %}
                                     {% for service in all_services %}
                                         {%  if counter == 0 %}
-                                            <tr>
+                                            <tr style="border:0px;">
                                             {% endif %}
-                                            <td style="background-color: #aaa ;width:30%; border:1px solid black; margin:5px; padding:5px; text-align:center">
+                                            <td style="background-color: #585C5D; border-radius: 15px;width:30%; border:1px solid black; margin:5px; padding:5px; text-align:center">
                                                 <div class="card" style="width: 18rem; border: 0px">
-                                                    <div class="card-body" style="background-color: #aaa";>
+                                                    <div class="card-body" style="background-color: #2084F2";>
                                                         <h5 class="card-title">
                                                             {{service.getName}}</h5>
                                                         <h5 class="card-title">
