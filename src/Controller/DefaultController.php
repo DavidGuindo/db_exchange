@@ -81,7 +81,7 @@ class DefaultController extends Controller {
 	/**
 	 * @Route("/areaprivada", name="areaprivada")
 	 */
-	public function areaprivada(){
+	public function areaprivada($messageModale = NULL){
 
 		if(! $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY')){
 		}
@@ -95,6 +95,7 @@ class DefaultController extends Controller {
 		// Usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser();
+		$allRequest = [];
 
 		// Buscamos los servicios del usuario logeado
 		$servicesUser = $user->getServices();
@@ -114,7 +115,7 @@ class DefaultController extends Controller {
 		$all_city = $repositoryCity->findAll();
 		$all_contacto = $repositoryContacto->findAll();
 
-		return $this->render('privada.html.twig', ['user'=>$user,'all_category'=>$all_category, 'all_users'=>$all_users, 'allMessage'=>$allMessage, 'all_city'=>$all_city, 'all_contacto'=>$all_contacto, 'all_request'=>$allRequest]);		
+		return $this->render('privada.html.twig', ['messageModale'=>$messageModale, 'user'=>$user,'all_category'=>$all_category, 'all_users'=>$all_users, 'allMessage'=>$allMessage, 'all_city'=>$all_city, 'all_contacto'=>$all_contacto, 'all_request'=>$allRequest]);		
 	}
 
 	/**
@@ -173,9 +174,13 @@ class DefaultController extends Controller {
 			// subimos a base de datos
 			$entityManager->persist($new_category);
 			$entityManager->flush();
+
+			$success = "Categoría creada con éxito";
+			return $this->redirectToRoute("areaprivada", array('success' => $success));
 		}
 
-		return $this->redirectToRoute("areaprivada");
+		$error = "Esta categoría ya existe";
+		return $this->redirectToRoute("areaprivada", array('error' => $error));
 
 	}
 
@@ -326,6 +331,7 @@ class DefaultController extends Controller {
 
 		return $this->redirectToRoute("areaprivada");
 	}
+
 	/**
 	 * @Route("/acceptRequest", name="acceptRequest")
 	 * METODO QUE ACEPTA LA SOLICITUD DE UN SERVICIO
@@ -501,7 +507,6 @@ class DefaultController extends Controller {
 				$user->setImg($imagen);
 			}
 
-
 			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->merge($user);
 			$entityManager->flush();
@@ -521,8 +526,11 @@ class DefaultController extends Controller {
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser();
 
+		$user->setLow(true);
+
 		$entityManager = $this->getDoctrine()->getManager();
-		$entityManager->remove($user);
+		$entityManager->merge($user);
+		$entityManager->flush();
 
 		return $this->redirectToRoute("app_logout",['user'=>$user]);
 
