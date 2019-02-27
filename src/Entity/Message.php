@@ -116,4 +116,9 @@ class Message
 
         return $this;
     }
+
+    public function __toString(){
+        return (String)$this->id;
+    }
+
 }

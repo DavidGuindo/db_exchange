@@ -15,7 +15,6 @@ use App\Entity\Request;
 use App\Entity\City;
 use App\Entity\Contacto;
 
-
 // $token = $this->get('security.token_storage')->getToken();
 // $user = $token->getUser(); OBTENER USUARIO LOGEADO.
 
@@ -47,13 +46,11 @@ class DefaultController extends Controller {
 
 			if(empty($all_services)){
 				return $this->render('index.html.twig', ['all_cities'=>$ciudades,
-				'all_categories'=>$categorias]);
+				'all_categories'=>$categorias, 'user'=>$user]);
 			}
 
+			return $this->render('index.html.twig', ['user'=>$user, 'all_services'=>$all_services, 'all_cities'=>$ciudades,'all_categories'=>$categorias]);
 
-			return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades,'all_categories'=>$categorias]);
-
-			
 		}else{
 
 			$token = $this->get('security.token_storage')->getToken();
@@ -72,12 +69,6 @@ class DefaultController extends Controller {
 			return $this->render('index.html.twig', ['all_services'=>$servicios,'all_categories'=>$categorias, 'user' => $user]);
 			
 		}
-		
-		if(empty($servicios)){
-				return $this->render('index.html.twig', ['all_categories'=>$categorias, 'user' => $user]);
-			}
-
-		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades, 'all_categories'=>$categorias, 'userLogged'=>$user]);		
 	}
 
 	/**
@@ -98,17 +89,24 @@ class DefaultController extends Controller {
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
 		$repositoryRequest = $this->getDoctrine()->getRepository(Request::class);
+		$repositoryMessage = $this->getDoctrine()->getRepository(Message::class);
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 		$repositoryContacto = $this->getDoctrine()->getRepository(Contacto::class);
 		// Usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser();
 
-		// solicitudes del usuario
-		$allRequest = $user->getRequests();
+		// Buscamos los servicios del usuario logeado
+		$servicesUser = $user->getServices();
 
-		// Mensajes del usuario
-		$allMessage = $user->getMessages();
+		// Recorremos sus servicios en busca de solicitudes de esos servicios y lo guardamos en un array
+		foreach($servicesUser as $service){
+			//Buscamos las solicitudes de ese servicio
+			$allRequest = $service->getRequests();
+		}
+
+		// Recogemos los mensages que ha recibido el usuario
+		$allMessage = $repositoryMessage->findByUserReciving($user);
 
 		// Descargamos todos las categorias, usuario, solicitudes y ciudades
 		$all_category = $repositoryCategory->findAll();
@@ -116,7 +114,7 @@ class DefaultController extends Controller {
 		$all_city = $repositoryCity->findAll();
 		$all_contacto = $repositoryContacto->findAll();
 
-		return $this->render('privada.html.twig', ['userLogged'=>$user,'all_category'=>$all_category, 'all_users'=>$all_users, 'allMessage'=>$allMessage, 'all_city'=>$all_city, 'all_contacto'=>$all_contacto, 'all_request'=>$allRequest]);		
+		return $this->render('privada.html.twig', ['user'=>$user,'all_category'=>$all_category, 'all_users'=>$all_users, 'allMessage'=>$allMessage, 'all_city'=>$all_city, 'all_contacto'=>$all_contacto, 'all_request'=>$allRequest]);		
 	}
 
 	/**
@@ -127,26 +125,32 @@ class DefaultController extends Controller {
 		$entityManager = $this->getDoctrine()->getManager();
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);;
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);;
-		// buscamos la categoria y la ciudad por la id que hemos recibido
-		$data['city']=$repositoryCity->findOneById($_POST['city']);
-		$data['category']=$repositoryCategory->findOneById($_POST['category']);
-		$data['name']=$_POST['name'];
-		$data['time']=$_POST['time'];
+		
+		// Comprobamos que los campos NOMBRE y TIEMPO NO ESTEN VACIOS
+		if(!empty($_POST['name']) && !empty($_POST['time'])){
+		
+			// buscamos la categoria y la ciudad por la id que hemos recibido
+			$data['city']=$repositoryCity->findOneById($_POST['city']);
+			$data['category']=$repositoryCategory->findOneById($_POST['category']);
+			$data['name']=$_POST['name'];
+			$data['time']=$_POST['time'];
 
-		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
-		$imagen = $_FILES['img']['name'];
-		$data['img']=$imagen;
+			move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
+			$imagen = $_FILES['img']['name'];
+			$data['img']=$imagen;
 
-		// cogemos el usuario logeado para crear el servicio
-		$token = $this->get('security.token_storage')->getToken();
-		$data['userOffer'] = $token->getUser();
+			// cogemos el usuario logeado para crear el servicio
+			$token = $this->get('security.token_storage')->getToken();
+			$data['userOffer'] = $token->getUser();
 
-		// creamos objeto
-		$new_service = new Service($data);
+			// creamos objeto
+			$new_service = new Service($data);
 
-		// subimos a base de datos
-		$entityManager->persist($new_service);
-		$entityManager->flush();
+			// subimos a base de datos
+			$entityManager->persist($new_service);
+			$entityManager->flush();
+
+		}
 
 		return $this->redirectToRoute("areaprivada");
 	}
@@ -157,15 +161,19 @@ class DefaultController extends Controller {
 	 */
 	public function createCategory(){
 		$entityManager = $this->getDoctrine()->getManager();
+		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);;
 
-		$data['name']=$_POST['name'];
 		
-		//creamos objeto
-		$new_category = new Category($data);
-		
-		// subimos a base de datos
-		$entityManager->persist($new_category);
-		$entityManager->flush();
+		// Comprobamos si existe en base de datos con el nombre recogido del formulario
+		if(!$repositoryCategory->findOneByName($_POST['name'])){
+			$data['name']=$_POST['name'];
+			//creamos objeto
+			$new_category = new Category($data);
+			
+			// subimos a base de datos
+			$entityManager->persist($new_category);
+			$entityManager->flush();
+		}
 
 		return $this->redirectToRoute("areaprivada");
 
@@ -179,26 +187,30 @@ class DefaultController extends Controller {
 		$entityManager = $this->getDoctrine()->getManager();
 		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
 
-		// Usuario logeado
-		$token = $this->get('security.token_storage')->getToken();
-		$user = $token->getUser();
+		//Comprobamos que el cuerpo del mensaje no este vacio
+		if(!empty($_POST['bodyMessage'])){
 
-		//buscamos en base de datos el usuario que recibe el mensaje mediante su id
-		$data['userReciving'] = $repositoryUsers->find($_POST['userReciving']);
-		$data['userSend']=$user;
-		$data['bodyMessage']=$_POST['bodyMessage'];
-		
-		//creamos objeto
-		$new_message = new Message($data);
-		
-		echo $new_message->getCheckRead();
-		echo "<br>";
-		echo $new_message->getUserReciving()->getEmail();
-		echo "<br>";
-		echo $new_message->getUserSend()->getEmail();
-		// subimos a base de datos
-		$entityManager->persist($new_message);
-		$entityManager->flush();
+			// Usuario logeado
+			$token = $this->get('security.token_storage')->getToken();
+			$user = $token->getUser();
+
+			//buscamos en base de datos el usuario que recibe el mensaje mediante su id
+			$data['userReciving'] = $repositoryUsers->find($_POST['userReciving']);
+			$data['userSend']=$user;
+			$data['bodyMessage']=$_POST['bodyMessage'];
+			
+			//creamos objeto
+			$new_message = new Message($data);
+			
+			echo $new_message->getCheckRead();
+			echo "<br>";
+			echo $new_message->getUserReciving()->getEmail();
+			echo "<br>";
+			echo $new_message->getUserSend()->getEmail();
+			// subimos a base de datos
+			$entityManager->persist($new_message);
+			$entityManager->flush();
+		}
 
 		return $this->redirectToRoute("areaprivada");
 
@@ -208,8 +220,11 @@ class DefaultController extends Controller {
 	 * @Route("/contacto", name="contacto")
 	 */
 	public function contacto(){
+		// Usuario logeado
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser();
 		
-		return $this->render('contacto.html.twig');		
+		return $this->render('contacto.html.twig', ['user'=>$user]);		
 	}
 
 	/**
@@ -247,14 +262,19 @@ class DefaultController extends Controller {
 	 */
 	public function createCity(){
 		$entityManager = $this->getDoctrine()->getManager();
-		$data['name']=$_POST['name'];
+		$repositoryCity = $this->getDoctrine()->getRepository(City::class);;
 		
-		//creamos objeto
-		$new_city = new City($data);
+		// Comprobamos si existe en base de datos con el nombre recogido del formulario
+		if(!$repositoryCity->findOneByName($_POST['name'])){
+			$data['name']=$_POST['name'];
 		
-		// subimos a base de datos
-		$entityManager->persist($new_city);
-		$entityManager->flush();
+			//creamos objeto
+			$new_city = new City($data);
+			
+			// subimos a base de datos
+			$entityManager->persist($new_city);
+			$entityManager->flush();
+		};
 
 		return $this->redirectToRoute("areaprivada");
 	}
@@ -288,6 +308,25 @@ class DefaultController extends Controller {
 	}
 
 	/**
+	 * @Route("/checkRead", name="checkRead")
+	 * Método que marca como leido un mensaje
+	 */
+	public function checkRead(){
+		$entityManager = $this->getDoctrine()->getManager();
+		$repositoryMessage = $this->getDoctrine()->getRepository(Message::class);
+		
+		// buscamos el mensaje en base de datos con la id recibida
+		$messageRead = $repositoryMessage->find($_POST['messageId']);
+
+		$messageRead->setCheckRead(true);
+
+		// Lo modificamos en base de datos
+		$entityManager->merge($messageRead);
+		$entityManager->flush();
+
+		return $this->redirectToRoute("areaprivada");
+	}
+	/**
 	 * @Route("/acceptRequest", name="acceptRequest")
 	 * METODO QUE ACEPTA LA SOLICITUD DE UN SERVICIO
 	 */
@@ -313,7 +352,6 @@ class DefaultController extends Controller {
 
 	}
 
-	
 	/**
 	 * @Route("/finishRequest", name="finishRequest")
 	 * METODO QUE FINALIZA LA SOLICITUD DE UN SERVICIO
@@ -358,6 +396,7 @@ class DefaultController extends Controller {
 		$user = $token->getUser();
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 		$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
+		$servicios = [];
 
 		if($user == "anon."){
 
@@ -372,37 +411,37 @@ class DefaultController extends Controller {
 					if($value->getCategory()->getName() == $_POST['categoriaElegida']){
 						$servicios[] = $todosServicios[$key];
 					}
+				}
+
 			}
 
-		}
+			if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] != "0"){
 
-		if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] != "0"){
+				$categoria = $repositoryCategory->findOneByName($_POST['categoriaElegida']);
 
-			$categoria = $repositoryCategory->findOneByName($_POST['categoriaElegida']);
+				$servicios = $categoria->getServices();
 
-			$servicios = $categoria->getServices();
+			}
 
-		}
+			if($_POST['ciudadElegida'] != "0" && $_POST['categoriaElegida'] == "0"){
 
-		if($_POST['ciudadElegida'] != "0" && $_POST['categoriaElegida'] == "0"){
+				$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
 
-			$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
+				$servicios = $ciudad->getServices();
 
-			$servicios = $ciudad->getServices();
+			}
 
-		}
+			if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] == "0"){
 
-		if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] == "0"){
+				$servicios = $repositoryService->findAll();
+			}
 
-			$servicios = $repositoryService->findAll();
-		}
+			$ciudades = $repositoryCity->findAll();
 
-		$ciudades = $repositoryCity->findAll();
-
-		$categorias = $repositoryCategory->findAll();
-		
-		return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_cities'=>$ciudades,
-			'all_categories'=>$categorias, 'userLogged'=>$user]);
+			$categorias = $repositoryCategory->findAll();
+			
+			return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_cities'=>$ciudades,
+				'all_categories'=>$categorias, 'user'=>$user]);
 
 		}else{
 
@@ -421,7 +460,7 @@ class DefaultController extends Controller {
 
 				foreach ($todosServicios as $key => $value) {
 
-					if($value->getCity()->getName() == $ciudad ){
+					if($value->getCity() == $ciudad ){
 						$servicios[] = $todosServicios[$key];
 						
 					}
@@ -469,7 +508,7 @@ class DefaultController extends Controller {
 
 		}
 
-		return $this->render('editarContacto.html.twig', ['userLogeado'=>$user]);
+		return $this->render('editarContacto.html.twig', ['user'=>$user]);
 
 	}
 
@@ -477,8 +516,7 @@ class DefaultController extends Controller {
 	 * @Route("/baja", name="darDeBaja")
 	 * MÉTODO PARA DAR DE BAJA UN USUARIO
 	 */
-	public function darDeBaja()
-	{
+	public function darDeBaja(){
 
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser();
@@ -486,7 +524,7 @@ class DefaultController extends Controller {
 		$entityManager = $this->getDoctrine()->getManager();
 		$entityManager->remove($user);
 
-		return $this->redirectToRoute("app_logout");
+		return $this->redirectToRoute("app_logout",['user'=>$user]);
 
 
 	}

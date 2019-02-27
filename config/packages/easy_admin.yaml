@@ -12,3 +12,14 @@ easy_admin:
       class: App\Entity\Users
       list:
         title: 'Users'
+        fields:
+          - id
+          - email
+          - name
+          - lastName
+          - time
+
+  site_name: 'ExChange'
+  design:
+      menu:
+        - { entity: 'User', icon: 'user' }
