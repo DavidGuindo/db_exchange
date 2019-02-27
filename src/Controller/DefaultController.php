@@ -45,6 +45,11 @@ class DefaultController extends Controller {
 			$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 			$categorias = $repositoryCategory->findAll();
 
+			if(empty($all_services)){
+				return $this->render('index.html.twig', ['all_cities'=>$ciudades,
+				'all_categories'=>$categorias]);
+			}
+
 
 			return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades,'all_categories'=>$categorias]);
 
@@ -60,11 +65,18 @@ class DefaultController extends Controller {
 
 			$servicios = $user->getCity()->getServices();
 
+			if(empty($servicios)){
+				return $this->render('index.html.twig', ['all_categories'=>$categorias, 'user' => $user]);
+			}
 
 			return $this->render('index.html.twig', ['all_services'=>$servicios,'all_categories'=>$categorias, 'user' => $user]);
 
 		}
 		
+		if(empty($servicios)){
+				return $this->render('index.html.twig', ['all_categories'=>$categorias, 'user' => $user]);
+			}
+
 		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades, 'all_categories'=>$categorias, 'userLogged'=>$user]);		
 	}
 
