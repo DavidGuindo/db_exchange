@@ -4,7 +4,7 @@
     <a name="crearservicio"></a>
     <main>
         <div class="row">
-            <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
+            <div class="col-xl-7 col-lg-9 col-md-10 col-sm-12 mx-auto">
                 <div class="cserv mx-5 p-5 border rounded border-dark bg-login container-options">
                 <h3>CREAR SERVICIO</h3>
                     <form action="./createService" enctype="multipart/form-data" method="POST">
@@ -41,7 +41,7 @@
             </div>
         </div>
 <div class="row">
-    <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
+    <div class="col-xl-7 col-lg-9 col-md-10 col-sm-12 mx-auto">
         <div class="emensa mx-5 p-5 border rounded border-dark bg-login container-options">
             <h3>ENVIAR MENSAJE</h3>
                 <form action="./createMessage" method="POST">
@@ -65,7 +65,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
+    <div class="col-xl-7 col-lg-9 col-md-10 col-sm-12 mx-auto">
         <div class="emensa mx-5 p-5 border rounded border-dark bg-login container-options">
         <div id="containerMessage">
             <h3>MENSAJES RECIBIDOS</h3>
@@ -131,13 +131,21 @@
 </div>
  {% if user.getRoles[0] == 'ROLE_ADMIN' %}
 <div class="row">
-    <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
+    <div class="col-xl-7 col-lg-9 col-md-10 col-sm-12 mx-auto">
         <div class="emensa mx-5 p-5 border rounded border-dark bg-login container-options">
         <div class="row">
              <div class="col-12 mx-auto">
                 <h1>Área de administración</h1>
              </div>
         </div>
+        <div class="row mt-5">
+            <div class="col-12 mx-auto">
+                 <h3>GESTION DE USUARIOS</h3>
+            </div>
+                <div class="col-9 mx-auto">
+                    <button type="button" onclick="window.location.href='/admin'" class="btn btn-lg btn-primary active mt-4">Gestion de usuarios</button>
+                </div>
+            </div>
             <div class="row mt-5">
                 <div class="col-12 mx-auto">
                     <h3>CREAR CIUDAD</h3>
