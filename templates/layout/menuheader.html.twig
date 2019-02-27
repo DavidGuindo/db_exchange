@@ -17,43 +17,45 @@
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Virus
+                otros1
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Contenido</a>
-                <a class="dropdown-item" href="#">Reglas</a>
+                <a class="dropdown-item" href="#">opcion1</a>
+                <a class="dropdown-item" href="#">opcion2</a>
               </div>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Saboteur
+                otros2
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Contenido</a>
-                <a class="dropdown-item" href="#">Reglas</a>
+                <a class="dropdown-item" href="#">opcion1</a>
+                <a class="dropdown-item" href="#">opcion2</a>
               </div>
             </li>
           </ul>
           <div class="form-inline my-2 my-lg-0">
-          
+          {% if user is defined %}
           <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                <img src="img/user.png" width="50px" height="50px">
               </a>
-          
+      
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Perfil</a>
+                <a class="dropdown-item" href="#">{{user.name}}</a>
                 <a class="dropdown-item" href="#">mensajes</a>
                 <a class="dropdown-item" href="#">editar datos</a>
                 <a class="dropdown-item" href="#">Logout</a>
               </div>
             </li>
           </ul>
+          {% endif %}
+          {% if user is not defined %}
             <button class="btn btn-outline-warning my-2 mx-1 my-sm-0" type="button" onclick="window.location.href='/login'">Login</button> 
             <button class="btn btn-outline-warning my-2 mx-1 my-sm-0" type="button" onclick="window.location.href='/register'">Registrarse</button>
-
+         {% endif %}
           </div>
         </div>
       </nav>

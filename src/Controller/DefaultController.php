@@ -70,7 +70,7 @@ class DefaultController extends Controller {
 			}
 
 			return $this->render('index.html.twig', ['all_services'=>$servicios,'all_categories'=>$categorias, 'user' => $user]);
-
+			
 		}
 		
 		if(empty($servicios)){
