@@ -40,7 +40,7 @@ class RegistrationFormType extends AbstractType
             ])
         ;
 
-        // Añadimos
+        // Añadimos un select de ciudades
         $builder->add('city', EntityType::class, [
             'class' => City::class,
             'choice_label' => 'getName',

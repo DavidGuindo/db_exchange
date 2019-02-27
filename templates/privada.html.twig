@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block body %}
     <main>
+<<<<<<< HEAD
         <div class="row">
             <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
                 <div class="cserv mx-5 p-5 border rounded border-dark bg-login container-options">
@@ -24,6 +25,8 @@
                                             <option value="{{city.id}}">{{city.name}}</option>
                                         {% endfor %}
                                     </select>
+                                Imagen:
+                                    <input name="img" type="file" class="form-control-file">
                                 </div>
                             </div>
                         <div class="row">
@@ -124,6 +127,7 @@
     </div>
 </div>
 </div>
+ {% if userLogged.getRoles[0] == 'ROLE_ADMIN' %}
 <div class="row">
     <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
         <div class="emensa mx-5 p-5 border rounded border-dark bg-login container-options">
@@ -152,8 +156,6 @@
                     <form action="./createCategory" enctype="multipart/form-data" method="POST">
                         Nombre:
                             <input name="name" type="text" class="form-control">
-                        Imagen:
-                            <input name="img" type="file" class="form-control-file">
                             <input type="submit" value="Crear categoria" class="btn btn-lg btn-primary active mt-4">
                     </form>
                 </div>
@@ -161,7 +163,6 @@
         </div>
     </div>
 </div>
-
+{% endif %}
     </main>
 {% endblock %}
-                                                            

@@ -24,11 +24,6 @@ class Category
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $img;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Service", mappedBy="category")
      */
     private $services;
@@ -37,7 +32,6 @@ class Category
     {
         $this->services = new ArrayCollection();
         $this->name = $data['name'];
-        $this->img = $data['img'];
     }
 
     public function getId(): ?int
@@ -53,18 +47,6 @@ class Category
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getImg(): ?string
-    {
-        return $this->img;
-    }
-
-    public function setImg(string $img): self
-    {
-        $this->img = $img;
 
         return $this;
     }

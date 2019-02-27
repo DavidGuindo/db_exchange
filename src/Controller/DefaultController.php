@@ -36,7 +36,7 @@ class DefaultController extends Controller {
 
 			//descargamos todos los servicios que tenemo en base de datos para mostrar en la vista
 			$repositoryService = $this->getDoctrine()->getRepository(Service::class);
-		// Descargamos todos los servicios
+			// Descargamos todos los servicios
 			$all_services = $repositoryService->findAll();
 
 			$repositoryCity = $this->getDoctrine()->getRepository(City::class);
@@ -45,9 +45,13 @@ class DefaultController extends Controller {
 			$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
 			$categorias = $repositoryCategory->findAll();
 
-
-			return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades,
+			if(empty($all_services)){
+				return $this->render('index.html.twig', ['all_cities'=>$ciudades,
 				'all_categories'=>$categorias]);
+			}
+
+
+			return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades,'all_categories'=>$categorias]);
 
 			
 		}else{
@@ -57,22 +61,23 @@ class DefaultController extends Controller {
 
 			$repositoryCity = $this->getDoctrine()->getRepository(City::class);
 			$repositoryCategory = $this->getDoctrine()->getRepository(Category::class);
-
 			$categorias = $repositoryCategory->findAll();
-			$ciudad = $repositoryCity->findOneByName($user->getCity());
-			
-			
 
-			if($ciudad->getServices() == NULL) {
-				$message = 'No hay resultados disponibles temporalmente';
-				return $this->render('index.html.twig', [$message,'all_categories'=>$categorias, 'user' => $user]);
-			} else {
+			$servicios = $user->getCity()->getServices();
+
+			if(empty($servicios)){
+				return $this->render('index.html.twig', ['all_categories'=>$categorias, 'user' => $user]);
+			}
 
 			$servicios = $ciudad->getServices();
 			return $this->render('index.html.twig', ['all_services'=>$servicios,'all_categories'=>$categorias, 'user' => $user]);
 			}
 		}
 		
+		if(empty($servicios)){
+				return $this->render('index.html.twig', ['all_categories'=>$categorias, 'user' => $user]);
+			}
+
 		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades, 'all_categories'=>$categorias, 'userLogged'=>$user]);		
 	}
 
@@ -101,7 +106,7 @@ class DefaultController extends Controller {
 
 		// solicitudes del usuario
 		$allRequest = $user->getRequests();
-		
+
 		// Mensajes del usuario
 		$allMessage = $user->getMessages();
 
@@ -110,7 +115,7 @@ class DefaultController extends Controller {
 		$all_users = $repositoryUsers->findAll();
 		$all_city = $repositoryCity->findAll();
 
-		return $this->render('privada.html.twig', ['all_category'=>$all_category, 'all_users'=>$all_users, 'allMessage'=>$allMessage, 'all_city'=>$all_city, 'all_request'=>$allRequest]);		
+		return $this->render('privada.html.twig', ['userLogged'=>$user,'all_category'=>$all_category, 'all_users'=>$all_users, 'allMessage'=>$allMessage, 'all_city'=>$all_city, 'all_request'=>$allRequest]);		
 	}
 
 	/**
@@ -147,15 +152,12 @@ class DefaultController extends Controller {
 
 	/**
 	 * @Route("/createCategory", name="createCategory")
-	 * Crear servicios
+	 * Crear categoria
 	 */
 	public function createCategory(){
 		$entityManager = $this->getDoctrine()->getManager();
 
 		$data['name']=$_POST['name'];
-		move_uploaded_file($_FILES['img']['tmp_name'], $_FILES['img']['name']);
-		$imagen = $_FILES['img']['name'];
-		$data['img']=$imagen;
 		
 		//creamos objeto
 		$new_category = new Category($data);
@@ -212,7 +214,6 @@ class DefaultController extends Controller {
 	/**
 	 * @Route("/contactoEnviado", name="contactoEnviado")
 	 */
-	
 	public function contactoEnviado(){
 		$today = date("F j, Y, g:i a");                 // March 10, 2001, 5:16 pm
         if(isset($_POST['contactoEnv'])) {
@@ -227,7 +228,6 @@ class DefaultController extends Controller {
 	/**
 	 * @Route("/contactoLeido", name="contactoLeido")
 	 */
-	// maybe
 	public function contactoLeido(Contacto $contact){
 			$value=true;
 			$contact->setLeido($value);
@@ -263,18 +263,21 @@ class DefaultController extends Controller {
 		$entityManager = $this->getDoctrine()->getManager();
 		$repositoryService = $this->getDoctrine()->getRepository(Service::class);;
 
-		// buscamos el servicio en base de datos con la id que tenemos
-		$data['service'] = $repositoryService->find($_POST['serviceId']);
-
 		// cogemos el usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
 		$data['userRequest'] = $token->getUser();
 
-		// creamos un mensaje con el servicio y el usuario
-		$newRequest = new Request($data);
+		// buscamos el servicio en base de datos con la id que tenemos
+		$data['service'] = $repositoryService->find($_POST['serviceId']);
 
-		$entityManager->persist($newRequest);
-		$entityManager->flush();
+		// Si el saldo del usuario menos el tiempo superan las 5H, no puede soliciar el servicio
+		if($data['userRequest']->comprobarSaldo($data['service']->getTime())){
+			// creamos un mensaje con el servicio y el usuario
+			$newRequest = new Request($data);
+
+			$entityManager->persist($newRequest);
+			$entityManager->flush();
+		}
 
 		return $this->redirectToRoute("index");
 	}
@@ -308,19 +311,31 @@ class DefaultController extends Controller {
 	
 	/**
 	 * @Route("/finishRequest", name="finishRequest")
-	 * METODO QUE ACEPTA LA SOLICITUD DE UN SERVICIO
+	 * METODO QUE FINALIZA LA SOLICITUD DE UN SERVICIO
 	 */
 	public function finishRequest(){
 		$entityManager = $this->getDoctrine()->getManager();
 		$repositoryRequest = $this->getDoctrine()->getRepository(Request::class);
 		
+		// cogemos el usuario logeado
+		$token = $this->get('security.token_storage')->getToken();
+		$user = $token->getUser();
+
 		// buscamos la solicitud en base de datos con la id recibida
 		$requestModify = $repositoryRequest->find($_POST['requestId']);
+
+		// Le quitamos al usuario que solicito el servico el tiempo que costó
+		$user->setTime($user->getTime()-$requestModify->getService()->getTime());
+
+		// Ahora le damos el tiempo que costó el servicio al usuario que lo prestó
+		$requestModify->getService()->getUserOffer()->setTime(+$requestModify->getService()->getTime());
 
 		//Marcamos el servicio como finalizado
 		$requestModify->setFinish(true);
 
-		// Lo modificamos en base de datos
+		// Modificamos en base de datos los usuarios y la solicitud
+		$entityManager->merge($user);
+		$entityManager->merge($requestModify->getService()->getUserOffer());
 		$entityManager->merge($requestModify);
 		$entityManager->flush();
 
@@ -330,7 +345,7 @@ class DefaultController extends Controller {
 
 	/**
 	 * @Route("/buscador", name="buscar")
-	 * CREAR MENSAJE
+	 * MÉTODO PARA BUSCAR SERVICIOS
 	 */
 	public function filtro(){
 
@@ -414,7 +429,7 @@ class DefaultController extends Controller {
 
 	/**
 	 * @Route("/editarPerfil", name="editar")
-	 * CREAR MENSAJE
+	 * MÉTODO PARA EDITAR LOS DATOS DE UN USUARIO
 	 */
 	public function editar(){
 
@@ -455,7 +470,7 @@ class DefaultController extends Controller {
 
 	/**
 	 * @Route("/baja", name="darDeBaja")
-	 * CREAR MENSAJE
+	 * MÉTODO PARA DAR DE BAJA UN USUARIO
 	 */
 	public function darDeBaja()
 	{
@@ -468,25 +483,6 @@ class DefaultController extends Controller {
 
 		return $this->redirectToRoute("app_logout");
 
-
-	}
-
-	/**
-	 * @Route("/facturar", name="factura")
-	 * METODO QUE RESTA LOS MINUTOS DEL DEMANDANTE Y SE LOS PASA AL PRESTADOR DEL SERVICIO
-	 */
-	public function facturaServicio(){
-
-		//servicioTime sera el tiempo del servicio realizado.
-		$this->setTime(parseInt($this->getTime()) - parseInt($_POST['servicioTime']));		
-
-		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
-		$prestador = $repositoryUsers->find($_POST['prestadorId']);//sacamos al prestador del servicio
-		$prestador->setTime(parseInt($prestador->getTime()) - parseInt($_POST['servicioTime'])); //y aumentamos su tiempo
-																	
-
-
-		return $this->redirectToRoute("index"); //redirección a index por defecto, eres libre de modificarlo 											david
 
 	}
 }
