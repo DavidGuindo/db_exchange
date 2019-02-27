@@ -1,61 +1,58 @@
 <nav class="navbar navbar-expand-lg navbar-expand-xl navbar-dark sticky-top bg-info">
-        <a class="navbar-brand" href="#" onclick="window.location.href='/'"><img src="img/Logomenu.png"></img></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" 
-                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
-                aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
+    <a class="navbar-brand" href="#" onclick="window.location.href='/'">
+        <img src="img/Logomenu.png"></img>
+    </a>
+    <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="#" onclick="window.location.href='/'">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="#" onclick="window.location.href='/'">Home
+                    <span class="sr-only">(current)</span>
+                </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" onclick="window.location.href='/contacto'">Contactanos</a>
+                <a class="nav-link" href="#" onclick="window.location.href='/contacto'">Contactanos</a>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
-                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                otros1
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">opcion1</a>
-                <a class="dropdown-item" href="#">opcion2</a>
-              </div>
+                <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="navbarDropdown" role="button">
+                    otros1
+                </a>
+                <div aria-labelledby="navbarDropdown" class="dropdown-menu">
+                    <a class="dropdown-item" href="#">opcion1</a>
+                    <a class="dropdown-item" href="#">opcion2</a>
+                </div>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
-                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                otros2
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">opcion1</a>
-                <a class="dropdown-item" href="#">opcion2</a>
-              </div>
+                <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="navbarDropdown" role="button">
+                    otros2
+                </a>
+                <div aria-labelledby="navbarDropdown" class="dropdown-menu">
+                    <a class="dropdown-item" href="#">opcion1</a>
+                    <a class="dropdown-item" href="#">opcion2</a>
+                </div>
             </li>
-          </ul>
-          <div class="form-inline my-2 my-lg-0">
-          {% if user is defined %}
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-               <img src="img/user.png" width="50px" height="50px">
-              </a>
-      
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">{{user.name}}</a>
-                <a class="dropdown-item" href="#">mensajes</a>
-                <a class="dropdown-item" href="#">editar datos</a>
-                <a class="dropdown-item" href="#">Logout</a>
-              </div>
-            </li>
-          </ul>
-          {% endif %}
-          {% if user is not defined %}
-            <button class="btn btn-outline-warning my-2 mx-1 my-sm-0" type="button" onclick="window.location.href='/login'">Login</button> 
-            <button class="btn btn-outline-warning my-2 mx-1 my-sm-0" type="button" onclick="window.location.href='/register'">Registrarse</button>
-         {% endif %}
-          </div>
+        </ul>
+        <div class="form-inline my-2 my-lg-0">
+            {% if (user is defined) and (user != 'anon.') %}
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="navbarDropdown" role="button">
+                            <img height="50px" src="img/user.png" width="50px"></a>
+                            <div aria-labelledby="navbarDropdown" class="dropdown-menu">
+                                <a class="dropdown-item" href="#">
+                                    {{user.name}}</a>
+                                <a class="dropdown-item" href="#">mensajes</a>
+                                <a class="dropdown-item" href="./editarPerfil">editar datos</a>
+                                <a class="dropdown-item" href="./logout">Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+              {% else %}
+                  <button class="btn btn-outline-warning my-2 mx-1 my-sm-0" onclick="window.location.href='/login'" type="button">Login</button>
+                  <button class="btn btn-outline-warning my-2 mx-1 my-sm-0" onclick="window.location.href='/register'" type="button">Registrarse</button>
+              {% endif %}
+            </div>
         </div>
-      </nav>
+    </nav>

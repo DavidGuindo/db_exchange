@@ -1,41 +1,36 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Editar perfil{% endblock %}
-
 {% block body %}
-
-<script type="text/javascript">
-  function borrar() {
-    return window.confirm( '¿Seguro que quieres darte de baja? El proceso no podrá ser revertido' );
-  }
-</script>
-
-
-
-<form action="/editarContacto" method="POST" enctype="multipart/form-data">
-
-	<h2>Rellene solo los campos que desee modificar</h2><br><br>
-
-	<div>
-
-	<label for="Nombre">Nombre: <input type="text" name="nuevoName"></label><br>
-	<label for="Apellidos">Apellidos: <input type="text" name="nuevoLastName"></label><br>
-	<label for="Ciudad">Ciudad: <input type="text" name="nuevoCity"></label><br>
-	<label for="Imagen">Imagen: <input type="file" name="nuevoImg"></label><br>
-	<input type="hidden" name="modificar" value="true"><br>
-
-	<input type="submit" value="Modificar"
-
-	</div>
-
-</form><br>
-
-<form action="/" method="POST">
-<input type="submit" value="Volver a inicio">
-</form>
-
-<form action ="/baja" method="POST" onsubmit="return borrar()">
-	<input type="submit" value="Darse de baja">
-</form> 
-
-{% endblock %}
+    <script type="text/javascript">
+        function borrar() {
+            return window.confirm('¿Seguro que quieres darte de baja? El proceso no podrá ser revertido');
+        }
+    </script>
+    <form action="/editarContacto" enctype="multipart/form-data" method="POST">
+        <h2>Rellene solo los campos que desee modificar</h2>
+        <br>
+            <br>
+                <div>
+                    <label for="Nombre">Nombre:
+                        <input name="nuevoName" type="text"></label>
+                        <br>
+                            <label for="Apellidos">Apellidos:
+                                <input name="nuevoLastName" type="text"></label>
+                                <br>
+                                    <label for="Ciudad">Ciudad:
+                                        <input name="nuevoCity" type="text"></label>
+                                        <br>
+                                            <label for="Imagen">Imagen:
+                                                <input name="nuevoImg" type="file"></label>
+                                                <br>
+                                                    <input name="modificar" type="hidden" value="true">
+                                                        <br>
+                                                            <input type="submit" value="Modificar"></div>
+                                                        </form>
+                                                        <br>
+                                                            <form action="/" method="POST">
+                                                                <input type="submit" value="Volver a inicio"></form>
+                                                                <form action="/baja" method="POST" onsubmit="return borrar()">
+                                                                    <input type="submit" value="Darse de baja"></form>
+                                                                {% endblock %}
+                                                            

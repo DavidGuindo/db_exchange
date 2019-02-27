@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block body %}
     <main>
-<<<<<<< HEAD
         <div class="row">
             <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
                 <div class="cserv mx-5 p-5 border rounded border-dark bg-login container-options">
@@ -67,25 +66,26 @@
     <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
         <div class="emensa mx-5 p-5 border rounded border-dark bg-login container-options">
         <div id="containerMessage">
-                <h3>MENSAJES RECIBIDOS</h3>
-                    {% for message in allMessage %}
-                        <div class="message">
-                            <p>Fecha:
-                                {{message.date}}</p>
-                            <p>Usuario que envia:
-                                {{message.userSend.email}}</p>
-                            <p>Usuario que recibe:
-                                {{message.userReciving.email}}</p>
-                            <p>Mensaje:
-                                {{message.bodyMessage}}</p>
-                            <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
-                        {% if message.getCheckRead == 0 %}
-                            <p>NO LEIDO</p>
-                        {% else %}
-                            <p>LEIDO</p>
-                        {% endif %}
-                        </div>
-                    {% endfor %}
+            <h3>MENSAJES RECIBIDOS</h3>
+            {% for message in allMessage %}
+                <div class="message">
+                <p>Fecha:{{message.date}}</p>
+                <p>Usuario que envia:{{message.userSend.email}}</p>
+                <p>Usuario que recibe:{{message.userReciving.email}}</p>
+                <p>Mensaje:{{message.bodyMessage}}</p>
+                <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
+                {% if message.getCheckRead == 0 %}
+                    <p>NO LEIDO</p>
+                {% else %}
+                    <p>LEIDO</p>
+                {% endif %}
+                </div>
+                <!--FORMULARIO PARA MARCAR COMO LEIDO EL MENSAJE-->
+                <form action="./checkRead" method="POST">
+                    <input type="hidden" value="{{message.getId}}" name="messageId">
+                    <input type="submit" value="Marcar como leido">
+                </form>
+            {% endfor %}
         </div>
     <div id="containerRequest">
         <h3>SOLICITUDES RECIBIDAS</h3>
@@ -127,7 +127,7 @@
     </div>
 </div>
 </div>
- {% if userLogged.getRoles[0] == 'ROLE_ADMIN' %}
+ {% if user.getRoles[0] == 'ROLE_ADMIN' %}
 <div class="row">
     <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
         <div class="emensa mx-5 p-5 border rounded border-dark bg-login container-options">
