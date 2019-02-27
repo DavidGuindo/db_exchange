@@ -114,7 +114,7 @@ class DefaultController extends Controller {
 		$all_city = $repositoryCity->findAll();
 		$all_contacto = $repositoryContacto->findAll();
 
-		return $this->render('privada.html.twig', ['userLogged'=>$user,'all_category'=>$all_category, 'all_users'=>$all_users, 'allMessage'=>$allMessage, 'all_city'=>$all_city, 'all_contacto'=>$all_contacto, 'all_request'=>$allRequest]);		
+		return $this->render('privada.html.twig', ['user'=>$user,'all_category'=>$all_category, 'all_users'=>$all_users, 'allMessage'=>$allMessage, 'all_city'=>$all_city, 'all_contacto'=>$all_contacto, 'all_request'=>$allRequest]);		
 	}
 
 	/**
