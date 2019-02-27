@@ -4,13 +4,11 @@
 
 {% block body %}
 
-<script type="text/javascript">
-  function borrar() {
-    return window.confirm( '¿Seguro que quieres darte de baja? El proceso no podrá ser revertido' );
-  }
-</script>
 
 
+<div class="row">
+    <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
+         <div class="cserv mx-5 p-5 border rounded border-dark bg-login container-options">
 
 <form action="/editarContacto" method="POST" enctype="multipart/form-data">
 
@@ -18,24 +16,28 @@
 
 	<div>
 
-	<label for="Nombre">Nombre: <input type="text" name="nuevoName"></label><br>
-	<label for="Apellidos">Apellidos: <input type="text" name="nuevoLastName"></label><br>
-	<label for="Ciudad">Ciudad: <input type="text" name="nuevoCity"></label><br>
-	<label for="Imagen">Imagen: <input type="file" name="nuevoImg"></label><br>
-	<input type="hidden" name="modificar" value="true"><br>
+	<label for="Nombre">Nombre: </label><input type="text" name="nuevoName" class="form-control"><br>
+	<label for="Apellidos">Apellidos: </label><input type="text" name="nuevoLastName" class="form-control"><br>
+	<label for="Ciudad">Ciudad: </label><input type="text" name="nuevoCity" class="form-control"><br>
+	<label for="Imagen">Imagen: </label><input type="file" name="nuevoImg"></label><br>
+	<input type="hidden" name="modificar" value="true" class="form-control-file"><br>
 
-	<input type="submit" value="Modificar"
+	<input type="submit" value="Modificar" class="btn btn-lg btn-primary active mt-4">
 
 	</div>
 
 </form><br>
 
-<form action="/" method="POST">
-<input type="submit" value="Volver a inicio">
-</form>
-
 <form action ="/baja" method="POST" onsubmit="return borrar()">
-	<input type="submit" value="Darse de baja">
+	<input type="submit" value="Darse de baja" class="btn btn-lg btn-primary active mt-4">
 </form> 
 
+</div>
+</div>
+</div>
+<script type="text/javascript">
+  function borrar() {
+    return window.confirm( '¿Seguro que quieres darte de baja? El proceso no podrá ser revertido' );
+  }
+</script>
 {% endblock %}
