@@ -8,7 +8,7 @@ body {
     background-attachment: fixed;
     /* La imagen de fondo se reescala automáticamente con el cambio del ancho de ventana del navegador */
     background-size: cover;
-    background-color: #cccccc;
+		background-color: #cccccc;
     }
     
     .container-login {
@@ -132,4 +132,16 @@ fieldset{
 }
 #selectgenerico option {
 	font-weight:normal;
+}
+
+.navicon {
+	margin-right: 200px;
+}
+
+.ancla:before {
+	display: block;
+	content: " ";
+	margin-top: -250px;
+	height: 250px;
+	visibility: hidden;
 }

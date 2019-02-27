@@ -91,6 +91,7 @@ class DefaultController extends Controller {
 		$repositoryRequest = $this->getDoctrine()->getRepository(Request::class);
 		$repositoryMessage = $this->getDoctrine()->getRepository(Message::class);
 		$repositoryCity = $this->getDoctrine()->getRepository(City::class);
+		$repositoryContacto = $this->getDoctrine()->getRepository(Contacto::class);
 		// Usuario logeado
 		$token = $this->get('security.token_storage')->getToken();
 		$user = $token->getUser();
@@ -111,8 +112,9 @@ class DefaultController extends Controller {
 		$all_category = $repositoryCategory->findAll();
 		$all_users = $repositoryUsers->findAll();
 		$all_city = $repositoryCity->findAll();
+		$all_contacto = $repositoryContacto->findAll();
 
-		return $this->render('privada.html.twig', ['user'=>$user,'all_category'=>$all_category, 'all_users'=>$all_users, 'allMessage'=>$allMessage, 'all_city'=>$all_city, 'all_request'=>$allRequest]);		
+		return $this->render('privada.html.twig', ['userLogged'=>$user,'all_category'=>$all_category, 'all_users'=>$all_users, 'allMessage'=>$allMessage, 'all_city'=>$all_city, 'all_contacto'=>$all_contacto, 'all_request'=>$allRequest]);		
 	}
 
 	/**
@@ -183,7 +185,7 @@ class DefaultController extends Controller {
 	 */
 	public function createMessage(){
 		$entityManager = $this->getDoctrine()->getManager();
-		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);;
+		$repositoryUsers = $this->getDoctrine()->getRepository(Users::class);
 
 		//Comprobamos que el cuerpo del mensaje no este vacio
 		if(!empty($_POST['bodyMessage'])){
@@ -242,12 +244,16 @@ class DefaultController extends Controller {
 	/**
 	 * @Route("/contactoLeido", name="contactoLeido")
 	 */
-	public function contactoLeido(Contacto $contact){
-			$value=true;
-			$contact->setLeido($value);
+	public function contactoLeido(){
+		if(isset($_POST['leido'])) {
+			$repositoryContacto = $this->getDoctrine()->getRepository(Contacto::class);
+			$contact = $repositoryContacto -> find($_POST['contactoId']);
+			$contact->setLeido(true);
 			$manager = $this->getDoctrine()->getManager();
             $manager->merge($contact);
-            $manager->flush($contact);
+			$manager->flush($contact);
+		}
+		return $this->redirectToRoute("areaprivada");
 	}
 
 	/**
