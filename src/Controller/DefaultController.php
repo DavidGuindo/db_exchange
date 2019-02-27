@@ -366,37 +366,37 @@ class DefaultController extends Controller {
 					if($value->getCategory()->getName() == $_POST['categoriaElegida']){
 						$servicios[] = $todosServicios[$key];
 					}
+				}
+
 			}
 
-		}
+			if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] != "0"){
 
-		if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] != "0"){
+				$categoria = $repositoryCategory->findOneByName($_POST['categoriaElegida']);
 
-			$categoria = $repositoryCategory->findOneByName($_POST['categoriaElegida']);
+				$servicios = $categoria->getServices();
 
-			$servicios = $categoria->getServices();
+			}
 
-		}
+			if($_POST['ciudadElegida'] != "0" && $_POST['categoriaElegida'] == "0"){
 
-		if($_POST['ciudadElegida'] != "0" && $_POST['categoriaElegida'] == "0"){
+				$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
 
-			$ciudad = $repositoryCity->findOneByName($_POST['ciudadElegida']);
+				$servicios = $ciudad->getServices();
 
-			$servicios = $ciudad->getServices();
+			}
 
-		}
+			if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] == "0"){
 
-		if($_POST['ciudadElegida'] == "0" && $_POST['categoriaElegida'] == "0"){
+				$servicios = $repositoryService->findAll();
+			}
 
-			$servicios = $repositoryService->findAll();
-		}
+			$ciudades = $repositoryCity->findAll();
 
-		$ciudades = $repositoryCity->findAll();
-
-		$categorias = $repositoryCategory->findAll();
-		
-		return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_cities'=>$ciudades,
-			'all_categories'=>$categorias, 'userLogged'=>$user]);
+			$categorias = $repositoryCategory->findAll();
+			
+			return $this->render('index.html.twig', ['all_services'=>$servicios, 'all_cities'=>$ciudades,
+				'all_categories'=>$categorias, 'userLogged'=>$user]);
 
 		}else{
 
@@ -415,7 +415,7 @@ class DefaultController extends Controller {
 
 				foreach ($todosServicios as $key => $value) {
 
-					if($value->getCity()->getName() == $ciudad ){
+					if($value->getCity() == $ciudad ){
 						$servicios[] = $todosServicios[$key];
 						
 					}
