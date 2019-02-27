@@ -8,7 +8,11 @@
               <div class="col-3 mx-auto mb-4">
                  <img src="img/Logoex.PNG" class="my-2 mx-auto"/>
               </div>
-              <div class="col-12 mx-auto pb-5">
+             <div class="col-12 mx-auto pb-5">
+                <div class="row">
+                  <h3 class="mx-5 mb-3">Contacto:</h3>
+                  <h5 class="mx-5 mb-5 text-justify">Este es el formulario de contacto. Es obligatorio rellenar los campos y que el email sea válido ya que nuestra respuesta llegará mediante email.</h5>
+                </div>
                 <form action="/contactoEnviado" method="Post">
                   <div class="row">
                       <div class="col-5 mx-auto">
@@ -16,14 +20,14 @@
                         <input type="email" name="email" class="form-control" id="inputEmail" placeholder="Email" required/>
                       </div>
                       <div class="col-5 mx-auto mb-5">
-                        <label class="font-weight-bold" for="name">nombre:</label><br>
-                        <input type="text" name="name" class="form-control" id="name" placeholder="name" required>
+                        <label class="font-weight-bold" for="name">Nombre:</label><br>
+                        <input type="text" name="name" class="form-control" id="name" placeholder="name" required/>
                       </div>
                   </div>
                   <div class="row">
                         <div class="col-11 mx-auto mb-5">
                         <label class="font-weight-bold" for="comment">Mensaje:</label><br>
-                        <textarea name="mensaje" class="form-control" rows="5" id="comment" required></textarea>
+                        <textarea maxlength="220" name="mensaje" class="form-control" rows="5" id="comment" required/></textarea>
                       </div>
                   </div>
                       

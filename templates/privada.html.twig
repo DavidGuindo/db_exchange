@@ -1,118 +1,167 @@
 {% extends 'base.html.twig' %}
 {% block body %}
     <main>
-        <fieldset>
-            <legend>CREAR CIUDAD</legend>
-            <form action="./createCity" method="POST">
-                Nombre:
-                <input name="name" type="text">
-                    <input type="submit" value="Crear ciudad"></form>
-                </fieldset>
-                <fieldset>
-                    <legend>CREAR CATEGORÍA</legend>
+        <div class="row">
+            <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
+                <div class="cserv mx-5 p-5 border rounded border-dark bg-login container-options">
+                <h3>CREAR SERVICIO</h3>
+                    <form action="./createService" enctype="multipart/form-data" method="POST">
+                        <div class="row">
+                            <div class="col-9 mx-auto">
+                                Nombre:
+                                    <input name="name" type="text" class="form-control">
+                                Tiempo:
+                                    <input name="time" type="number" class="form-control">
+                                Categoría:
+                                    <select class="form-control" name="category">
+                                        {% for category in all_category %}
+                                            <option value="{{category.id}}">{{category.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                Ciudad:
+                                    <select class="form-control" name="city">
+                                        {% for city in all_city %}
+                                            <option value="{{city.id}}">{{city.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        <div class="row">
+                            <div class="col-9 mx-auto mt-4">
+                        <!--Imagen:
+                            <input name="img" type="file">-->
+                        <input type="submit" value="Crear servicio" class="btn btn-lg btn-primary active">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+<div class="row">
+    <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
+        <div class="emensa mx-5 p-5 border rounded border-dark bg-login container-options">
+            <h3>ENVIAR MENSAJE</h3>
+                <form action="./createMessage" method="POST">
+                    <div class="row">
+                        <div class="col-9 mx-auto">
+                            Destinatario:
+                                <select class="form-control" name="userReciving">
+                                    {% for user in all_users %}
+                                        <option value="{{user.id}}">{{user.email}}</option>
+                                    {% endfor %}
+                                </select>
+                            Cuerpo del mensaje:
+                            <textarea cols="30" class="form-control" name="bodyMessage" rows="5"></textarea>
+
+                            <input type="submit" value="Enviar mensaje" class="btn btn-lg btn-primary active mt-4">
+                        </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
+        <div class="emensa mx-5 p-5 border rounded border-dark bg-login container-options">
+        <div id="containerMessage">
+                <h3>MENSAJES RECIBIDOS</h3>
+                    {% for message in allMessage %}
+                        <div class="message">
+                            <p>Fecha:
+                                {{message.date}}</p>
+                            <p>Usuario que envia:
+                                {{message.userSend.email}}</p>
+                            <p>Usuario que recibe:
+                                {{message.userReciving.email}}</p>
+                            <p>Mensaje:
+                                {{message.bodyMessage}}</p>
+                            <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
+                        {% if message.getCheckRead == 0 %}
+                            <p>NO LEIDO</p>
+                        {% else %}
+                            <p>LEIDO</p>
+                        {% endif %}
+                        </div>
+                    {% endfor %}
+        </div>
+    <div id="containerRequest">
+        <h3>SOLICITUDES RECIBIDAS</h3>
+            {% for request in all_request %}
+        <div class="request">
+            <!--SOLICITUDES PENDIENTES-->
+            {% if request.accept == 2 %}
+                <p>El usuario
+                    {{request.getUserRequest.getEmail}}
+                    a solicitado tu servicio de
+                    {{request.getService.getName}}</p>
+                <p>Fecha:
+                    {{request.getDate}}</p>
+                <!--FORMULARIO PARA ACEPTAR O RECHAZAR LA OFERTA-->
+                <form action="./acceptRequest" method="POST">
+                    <input name="accept" type="submit" value="Aceptar">
+                        <input name="deny" type="submit" value="Rechazar">
+                            <input type="hidden" name="requestId" value="{{request.getId}}"></form>
+                            {% elseif  request.accept == 1 %}
+                            {% if request.finish == 0 %}
+                                <p>El usuario
+                                    {{request.getUserRequest.getEmail}}
+                                    a solicitado tu servicio de
+                                    {{request.getService.getName}}</p>
+                                <p>Fecha:
+                                    {{request.getDate}}</p>
+            <!--FORMULARIO MARCAR COMO FINALIZADO EL SERVICIO-->
+            <form action="./finishRequest" method="POST">
+                <input type="hidden" name="requestId" value="{{request.getId}}">
+                <input name="finish" type="submit" value="Finalizado"></form>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+    </div>
+</div>
+</div>
+<div class="row">
+    <div class="col-xl-7 col-lg-7 col-md-6 col-sm-11 mx-auto">
+        <div class="emensa mx-5 p-5 border rounded border-dark bg-login container-options">
+        <div class="row">
+             <div class="col-12 mx-auto">
+                <h1>Área de administración</h1>
+             </div>
+        </div>
+            <div class="row mt-5">
+            <div class="col-12 mx-auto">
+                 <h3>CREAR CIUDAD</h3>
+            </div>
+                <div class="col-9 mx-auto">
+                    <form action="./createCity" method="POST">
+                        Nombre:
+                        <input name="name" type="text" class="form-control">
+                        <input type="submit" value="Crear ciudad" class="btn btn-lg btn-primary active mt-4">
+                    </form>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-12 mx-auto">
+                    <h3>CREAR CATEGORÍA</h3>
+                </div>
+                <div class="col-9 mx-auto">
                     <form action="./createCategory" enctype="multipart/form-data" method="POST">
                         Nombre:
-                        <input name="name" type="text">
-                            Imagen:
-                            <input name="img" type="file">
-                                <input type="submit" value="Crear categoria"></form>
-                            </fieldset>
-                            <fieldset>
-                                <legend>CREAR SERVICIO</legend>
-                                <form action="./createService" enctype="multipart/form-data" method="POST">
-                                    <form action="./createService" enctype="multipart/form-data" method="POST">
-                                        Nombre:
-                                        <input name="name" type="text">
-                                            Tiempo:
-                                            <input name="time" type="number">
-                                                Categoría:
-                                                <select name="category">
-                                                    {% for category in all_category %}
-                                                        <option value="{{category.id}}">
-                                                            {{category.name}}</option>
-                                                    {% endfor %}
-                                                </select>
-                                                Ciudad:
-                                                <select name="city">
-                                                    {% for city in all_city %}
-                                                        <option value="{{city.id}}">
-                                                            {{city.name}}</option>
-                                                    {% endfor %}
-                                                </select>
-                                                Imagen:
-                                                <input name="img" type="file">
-                                                    <input type="submit" value="Crear servicio"></form>
-                                                </fieldset>
-                                                <fieldset>
-                                                    <legend>ENVIAR MENSAJE</legend>
-                                                    <form action="./createMessage" method="POST">
-                                                        Destinatario:
-                                                        <select name="userReciving">
-                                                            {% for user in all_users %}
-                                                                <option value="{{user.id}}">
-                                                                    {{user.email}}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                        Cuerpo del mensaje:
-                                                        <textarea cols="30" name="bodyMessage" rows="5"></textarea>
-                                                        <input type="submit" value="Enviar mensaje"></form>
-                                                    </fieldset>
-                                                    <div id="containerMessage">
-                                                        <h1>MENSAJES RECIBIDOS</h1>
-                                                        {% for message in allMessage %}
-                                                            <div class="message">
-                                                                <p>Fecha:
-                                                                    {{message.date}}</p>
-                                                                <p>Usuario que envia:
-                                                                    {{message.userSend.email}}</p>
-                                                                <p>Usuario que recibe:
-                                                                    {{message.userReciving.email}}</p>
-                                                                <p>Mensaje:
-                                                                    {{message.bodyMessage}}</p>
-                                                                <!--COMPROBAMOS SI EL MENSAJE ESTA LEIDO-->
-                                                                {% if message.getCheckRead == 0 %}
-                                                                    <p>NO LEIDO</p>
-                                                                    {% else %}
-                                                                    <p>LEIDO</p>
-                                                                {% endif %}
-                                                            </div>
-                                                        {% endfor %}
-                                                    </div>
-                                                    <div id="containerRequest">
-                                                        <h2>SOLICITUDES RECIBIDAS</h2>
-                                                        {% for request in all_request %}
-                                                            <div
-                                                                class="request">
-                                                                <!--SOLICITUDES PENDIENTES-->
-                                                                {% if request.accept == 2 %}
-                                                                    <p>El usuario
-                                                                        {{request.getUserRequest.getEmail}}
-                                                                        a solicitado tu servicio de
-                                                                        {{request.getService.getName}}</p>
-                                                                    <p>Fecha:
-                                                                        {{request.getDate}}</p>
-                                                                    <!--FORMULARIO PARA ACEPTAR O RECHAZAR LA OFERTA-->
-                                                                    <form action="./acceptRequest" method="POST">
-                                                                        <input name="accept" type="submit" value="Aceptar">
-                                                                            <input name="deny" type="submit" value="Rechazar">
-                                                                                <input type="hidden" name="requestId" value="{{request.getId}}"></form>
-                                                                                {% elseif  request.accept == 1 %}
-                                                                                {% if request.finish == 0 %}
-                                                                                    <p>El usuario
-                                                                                        {{request.getUserRequest.getEmail}}
-                                                                                        a solicitado tu servicio de
-                                                                                        {{request.getService.getName}}</p>
-                                                                                    <p>Fecha:
-                                                                                        {{request.getDate}}</p>
-                                                                                    <!--FORMULARIO MARCAR COMO FINALIZADO EL SERVICIO-->
-                                                                                    <form action="./finishRequest" method="POST">
-                                                                                        <input type="hidden" name="requestId" value="{{request.getId}}">
-                                                                                            <input name="finish" type="submit" value="Finalizado"></form>
-                                                                                        {% endif %}
-                                                                                    {% endif %}
-                                                                                </div>
-                                                                            {% endfor %}
-                                                                        </div>
-                                                                    </main>
-                                                                {% endblock %}
+                            <input name="name" type="text" class="form-control">
+                        Imagen:
+                            <input name="img" type="file" class="form-control-file">
+                            <input type="submit" value="Crear categoria" class="btn btn-lg btn-primary active mt-4">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </main>
+{% endblock %}
                                                             

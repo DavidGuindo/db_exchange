@@ -60,12 +60,17 @@ class DefaultController extends Controller {
 
 			$categorias = $repositoryCategory->findAll();
 			$ciudad = $repositoryCity->findOneByName($user->getCity());
+			
+			
+
+			if($ciudad->getServices() == NULL) {
+				$message = 'No hay resultados disponibles temporalmente';
+				return $this->render('index.html.twig', [$message,'all_categories'=>$categorias, 'user' => $user]);
+			} else {
 
 			$servicios = $ciudad->getServices();
-
-
 			return $this->render('index.html.twig', ['all_services'=>$servicios,'all_categories'=>$categorias, 'user' => $user]);
-
+			}
 		}
 		
 		return $this->render('index.html.twig', ['all_services'=>$all_services, 'all_cities'=>$ciudades, 'all_categories'=>$categorias, 'userLogged'=>$user]);		
