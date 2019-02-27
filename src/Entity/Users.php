@@ -91,10 +91,12 @@ class Users implements UserInterface
         if(isset($data['lastName'])){
             $this->lastName = $data['lastName'];
         }
-       /* if(isset($data['city'])){
+        if(isset($data['city'])){
             $this->city = $data['city'];
-        }*/
-        $this->time = 0;        
+        }
+        $this->time = 0;
+        
+        $this->roles[] = 'ROLE_USER';
     }
 
     public function getId(): ?int
@@ -243,8 +245,12 @@ class Users implements UserInterface
     }
 
 
+    /**
+     * Metodo que comprubeba si el usuario tiene un saldo menor a 5H.
+     * Devuelve FALSE si se ha sobrepasado el limite
+     */
     public function comprobarSaldo($cantidad){  //en cantidad le pasaremos lo que se le va a cobrar
-        if($this->time - $cantidad < 300){
+        if($this->time - $cantidad < -300){
             return false;
         }else{
            return true;
