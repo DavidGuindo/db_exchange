@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-        <a name="crearservicio"></a>
+
+    <a name="crearservicio"></a>
     <main>
         <div class="row">
             <div class="col-xl-7 col-lg-9 col-md-10 col-sm-12 mx-auto">
@@ -146,9 +147,9 @@
                 </div>
             </div>
             <div class="row mt-5">
-            <div class="col-12 mx-auto">
-                 <h3>CREAR CIUDAD</h3>
-            </div>
+                <div class="col-12 mx-auto">
+                    <h3>CREAR CIUDAD</h3>
+                </div>
                 <div class="col-9 mx-auto">
                     <form action="./createCity" method="POST">
                         Nombre:
@@ -170,18 +171,18 @@
                 </div>
             </div>
             <div class="row mt-5">
-            <div class="col-12 mx-auto">
-                 <h3>MENSAJES DE CONTACTO</h3>
-            </div>
-              {% for contacto in all_contacto %}
+                <div class="col-12 mx-auto">
+                    <h3>MENSAJES DE CONTACTO</h3>
+                </div>
+                {% for contacto in all_contacto %}
                 <div class="col-9 mx-auto">
-                      <strong> Email: </strong> {{contacto.getEmail}} <br>
-        
-                      <strong> Nombre: </strong> {{contacto.getNombre}} <br>
-                 
-                      <strong> Fecha: </strong> {{contacto.getFecha}} <br>
+                    <strong> Email: </strong> {{contacto.getEmail}} <br>
+    
+                    <strong> Nombre: </strong> {{contacto.getNombre}} <br>
+                
+                    <strong> Fecha: </strong> {{contacto.getFecha}} <br>
 
-                      <strong> Mensaje: </strong> {{contacto.getMensaje}}
+                    <strong> Mensaje: </strong> {{contacto.getMensaje}}
 
                     <form action="./contactoLeido" method="POST">
                         <input type="hidden" name="contactoId" value="{{contacto.getId}}">

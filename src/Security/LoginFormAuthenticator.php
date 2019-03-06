@@ -18,6 +18,13 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Validator\Constraints\Date;
 
 class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
@@ -66,12 +73,19 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
         $user = $this->entityManager->getRepository(Users::class)->findOneBy(['email' => $credentials['email']]);
 
-        if (!$user) {
-            // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Email could not be found.');
+        // Si esta dado de baja
+        if(!$user->getLow()){
+            if (!$user) {
+                // fail authentication with a custom error
+                throw new CustomUserMessageAuthenticationException('Email could not be found.');
+            }
+    
+            return $user;
+        } else {
+            // El usuario esta de baja
+            throw new CustomUserMessageAuthenticationException('Usuario dado de baja');
         }
 
-        return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)

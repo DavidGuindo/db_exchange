@@ -73,6 +73,11 @@ class Users implements UserInterface
     private $city;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $low;
+
+    /**
      * Contrsctor del objeto
      */
     public function __construct($data){
@@ -327,6 +332,18 @@ class Users implements UserInterface
     public function setCity(?city $city): self
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    public function getLow(): ?bool
+    {
+        return $this->low;
+    }
+
+    public function setLow(bool $low): self
+    {
+        $this->low = $low;
 
         return $this;
     }
